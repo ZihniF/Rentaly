@@ -1,8 +1,11 @@
+using FluentValidation;
 using Rentaly.BusinessLayer.Abstract;
 using Rentaly.BusinessLayer.Concrete;
+using Rentaly.BusinessLayer.ValidationRules;
 using Rentaly.DataAccessLayer.Abstract;
 using Rentaly.DataAccessLayer.Concrete;
 using Rentaly.DataAccessLayer.EntityFramework;
+using Rentaly.DtoLayer.RentalDtos;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,9 +26,10 @@ builder.Services.AddScoped<IBrandDal, EfBrandDal>();
 builder.Services.AddScoped<ICustomerService, CustomerManager>();
 builder.Services.AddScoped<ICustomerDal, EfCustomerDal>();
 
+builder.Services.AddScoped<IValidator<CreateRentalDto>, CreateRentalValidator>();
+builder.Services.AddScoped<IValidator<UpdateRentalStatusDto>, UpdateRentalStatusValidator>();
 builder.Services.AddScoped<IRentalDal, EfRentalDal>();
 builder.Services.AddScoped<IRentalService, RentalManager>();
-
 
 builder.Services.AddDbContext<RentalyContext>();
 
