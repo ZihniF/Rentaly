@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Rentaly.EntityLayer.Enums;
 
 namespace Rentaly.EntityLayer.Entities
 {
@@ -18,7 +19,7 @@ namespace Rentaly.EntityLayer.Entities
         public DateTime PickupDate { get; set; }
         public DateTime ReturnDate { get; set; }
         public decimal TotalPrice { get; set; }
-        public string Status { get; set; }
+        public RentalStatus Status { get; set; } = RentalStatus.Pending;
 
     }
 }

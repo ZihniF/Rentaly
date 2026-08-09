@@ -59,6 +59,11 @@ namespace Rentaly.DataAccessLayer.Concrete
                 .WithMany(x => x.ReturnRentals)
                 .HasForeignKey(x => x.ReturnBranchId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Rental>()
+                .Property(x => x.Status)
+                .HasConversion<string>()
+                .HasMaxLength(20);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
