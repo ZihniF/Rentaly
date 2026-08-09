@@ -1,4 +1,7 @@
-﻿using Rentaly.BusinessLayer.Abstract;
+﻿using AutoMapper;
+using Rentaly.BusinessLayer.Abstract;
+using Rentaly.DataAccessLayer.Abstract;
+using Rentaly.DtoLayer.CustomerDtos;
 using Rentaly.EntityLayer.Entities;
 using System;
 using System.Collections.Generic;
@@ -8,29 +11,42 @@ namespace Rentaly.BusinessLayer.Concrete
 {
     public class CustomerManager : ICustomerService
     {
-        public Task TDeleteAsync(int id)
+        private readonly ICustomerDal _customerDal;
+        private readonly IMapper _mapper;
+        public CustomerManager(ICustomerDal customerDal, IMapper mapper )
         {
-            throw new NotImplementedException();
+            _customerDal = customerDal;
+            _mapper = mapper;
         }
 
-        public Task<Customer> TGetByIdAsync(int id)
+        public async Task TDeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            await _customerDal.DeleteAsync(id);
         }
 
-        public Task<List<Customer>> TGetListAsync()
+        public async Task<GetCustomerByIdDto> TGetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var value= await _customerDal.GetByIdAsync(id);
+            return _mapper.Map<GetCustomerByIdDto>(value);
         }
 
-        public Task TInsertAsync(Customer entity)
+        public async Task<List<ResultCustomerDto>> TGetListAsync()
         {
-            throw new NotImplementedException();
+            var values = await _customerDal.GetListAsync();
+            return _mapper.Map<List<ResultCustomerDto>>(values);
         }
 
-        public Task TUpdateAsync(Customer entity)
+        public async Task TInsertAsync(CreateCustomerDto dto)
         {
-            throw new NotImplementedException();
+            var value = _mapper.Map<Customer>(dto);
+            await _customerDal.InsertAsync(value);
+        }
+        
+
+        public async Task TUpdateAsync(UpdateCustomerDto dto)
+        {
+            var value = _mapper.Map<Customer>(dto);
+            await _customerDal.UpdateAsync(value);
         }
     }
 }

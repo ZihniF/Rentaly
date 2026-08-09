@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="Rentaly.BusinessLayer/Rentaly.BusinessLayer.csproj" />
   <Project Path="Rentaly.DataAccessLayer/Rentaly.DataAccessLayer.csproj" />
+  <Project Path="Rentaly.DtoLayer/Rentaly.DtoLayer.csproj" Id="98339334-da21-4d72-9002-75525a99fb6a" />
   <Project Path="Rentaly.EntityLayer/Rentaly.EntityLayer.csproj" />
   <Project Path="Rentaly.WebUI/Rentaly.WebUI.csproj" />
 </Solution>
