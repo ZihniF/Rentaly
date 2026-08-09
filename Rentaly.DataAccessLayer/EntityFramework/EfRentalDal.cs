@@ -4,6 +4,7 @@ using Rentaly.DataAccessLayer.Concrete;
 using Rentaly.DataAccessLayer.RepositoryDesignPattern;
 using Rentaly.EntityLayer.Entities;
 using Rentaly.EntityLayer.Enums;
+using System.Data;
 
 namespace Rentaly.DataAccessLayer.EntityFramework
 {
@@ -59,6 +60,33 @@ namespace Rentaly.DataAccessLayer.EntityFramework
                  x.Status == RentalStatus.Approved) &&
                 pickupDate < x.ReturnDate &&
                 returnDate > x.PickupDate);
+        }
+        public async Task<bool> TryCreateRentalAsync(Rental rental)
+        {
+            await using var transaction =
+                await _rentalyContext.Database.BeginTransactionAsync(
+                    IsolationLevel.Serializable);
+
+            var hasConflict =
+                await _rentalyContext.Rentals.AnyAsync(x =>
+                    x.CarId == rental.CarId &&
+                    (x.Status == RentalStatus.Pending ||
+                     x.Status == RentalStatus.Approved) &&
+                    rental.PickupDate < x.ReturnDate &&
+                    rental.ReturnDate > x.PickupDate);
+
+            if (hasConflict)
+            {
+                await transaction.RollbackAsync();
+                return false;
+            }
+
+            await _rentalyContext.Rentals.AddAsync(rental);
+            await _rentalyContext.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+
+            return true;
         }
     }
 }

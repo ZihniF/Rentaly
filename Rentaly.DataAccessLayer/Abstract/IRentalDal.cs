@@ -1,7 +1,4 @@
 ﻿using Rentaly.EntityLayer.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Rentaly.DataAccessLayer.Abstract
 {
@@ -16,5 +13,7 @@ namespace Rentaly.DataAccessLayer.Abstract
             DateTime pickupDate,
             DateTime returnDate,
             int? excludedRentalId = null);
+
+        Task<bool> TryCreateRentalAsync(Rental rental);
     }
 }
