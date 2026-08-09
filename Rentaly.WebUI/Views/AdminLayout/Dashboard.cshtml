@@ -1,0 +1,50 @@
+@{
+    ViewData["Title"] = "Yönetim Paneli";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Yönetim Paneli</h1>
+        <p class="page-subtitle">Rezervasyonları, filoyu ve ana sayfa içeriklerini yönetin.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6 col-xl-3">
+        <a asp-area="Admin" asp-controller="Rentals" asp-action="Index" class="text-decoration-none">
+            <div class="table-card h-100 p-4">
+                <i class="fa-solid fa-calendar-check fa-2x text-primary mb-3"></i>
+                <h5>Rezervasyonlar</h5>
+                <p class="text-muted mb-0">Talepleri onaylayın, reddedin veya silin.</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <a asp-area="" asp-controller="Car" asp-action="CarList" class="text-decoration-none">
+            <div class="table-card h-100 p-4">
+                <i class="fa-solid fa-car-side fa-2x text-primary mb-3"></i>
+                <h5>Araçlar</h5>
+                <p class="text-muted mb-0">Filodaki araçları ve müsaitlik durumunu yönetin.</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <a asp-area="Admin" asp-controller="HomeContents" asp-action="Index" class="text-decoration-none">
+            <div class="table-card h-100 p-4">
+                <i class="fa-solid fa-layer-group fa-2x text-primary mb-3"></i>
+                <h5>Ana sayfa</h5>
+                <p class="text-muted mb-0">Dinamik içerik bölümlerini düzenleyin.</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <a asp-area="" asp-controller="Customer" asp-action="CustomerList" class="text-decoration-none">
+            <div class="table-card h-100 p-4">
+                <i class="fa-solid fa-users fa-2x text-primary mb-3"></i>
+                <h5>Müşteriler</h5>
+                <p class="text-muted mb-0">Müşteri kayıtlarını yönetin.</p>
+            </div>
+        </a>
+    </div>
+</div>

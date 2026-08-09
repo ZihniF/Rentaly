@@ -728,6 +728,7 @@
         <div class="car-card"
              data-id="@car.CarId"
              data-plate="@car.PlateNumber?.ToLower()"
+             data-name="@($"{car.Brand?.BrandName} {car.Model?.ModelName}".ToLower())"
              data-fuel="@car.FuelType"
              data-available="@car.IsAvailable.ToString().ToLower()"
              data-price="@car.DailyPrice"
@@ -738,7 +739,7 @@
             <div class="car-card-img">
                 @if (!string.IsNullOrEmpty(car.ImageUrl))
                 {
-                    <img src="@car.ImageUrl" alt="Araç Görseli" loading="lazy" />
+                    <img src="@car.ImageUrl" alt="@car.Brand?.BrandName @car.Model?.ModelName" loading="lazy" />
                 }
                 else
                 {
@@ -759,7 +760,7 @@
                 <!-- Başlık + Plaka -->
                 <div class="car-card-title-row">
                     <div class="car-card-title">
-                        @(car.Category?.CategoryName ?? "—") &nbsp;#@car.CarId
+                        @car.Brand?.BrandName @car.Model?.ModelName
                     </div>
                     <span class="car-card-plate">@car.PlateNumber</span>
                 </div>
@@ -833,6 +834,7 @@
         <div class="car-list-item"
              data-id="@car.CarId"
              data-plate="@car.PlateNumber?.ToLower()"
+             data-name="@($"{car.Brand?.BrandName} {car.Model?.ModelName}".ToLower())"
              data-fuel="@car.FuelType"
              data-available="@car.IsAvailable.ToString().ToLower()"
              data-price="@car.DailyPrice"
@@ -842,7 +844,7 @@
             <div class="car-list-thumb">
                 @if (!string.IsNullOrEmpty(car.ImageUrl))
                 {
-                    <img src="@car.ImageUrl" alt="Araç" loading="lazy" />
+                    <img src="@car.ImageUrl" alt="@car.Brand?.BrandName @car.Model?.ModelName" loading="lazy" />
                 }
                 else
                 {
@@ -852,7 +854,7 @@
 
             <div class="car-list-info">
                 <div class="car-list-title">
-                    @(car.Category?.CategoryName ?? "—") — @car.PlateNumber
+                    @car.Brand?.BrandName @car.Model?.ModelName — @car.PlateNumber
                 </div>
                 <div class="car-list-sub" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
                     <span>@car.Year</span>
@@ -998,10 +1000,11 @@
 
         const filterItem = (item) => {
             const plate = item.dataset.plate || '';
+            const name = item.dataset.name || '';
             const fuelVal = item.dataset.fuel || '';
             const isAvail = item.dataset.available === 'true';
 
-            const matchQ = !q || plate.includes(q) || item.dataset.id.includes(q);
+            const matchQ = !q || plate.includes(q) || name.includes(q) || item.dataset.id.includes(q);
             const matchAvail = available === 'all'
                 || (available === 'available' && isAvail)
                 || (available === 'unavailable' && !isAvail);

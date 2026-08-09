@@ -4,6 +4,7 @@ using Rentaly.EntityLayer.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Rentaly.DtoLayer.CarDtos;
 
 namespace Rentaly.BusinessLayer.Concrete
 {
@@ -25,6 +26,11 @@ namespace Rentaly.BusinessLayer.Concrete
         {
             return await _carDal.GetAllCarsWithCategoryAsync();
         }
+
+        public Task<List<Car>> TGetFilteredCarsAsync(CarFilterDto filter, int? take = null)
+            => _carDal.GetFilteredCarsAsync(filter, take);
+
+        public Task<Car?> TGetCarWithDetailsAsync(int id) => _carDal.GetCarWithDetailsAsync(id);
 
         public async Task<Car> TGetByIdAsync(int id)
         {

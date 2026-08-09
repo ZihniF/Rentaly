@@ -36,10 +36,11 @@ namespace Rentaly.BusinessLayer.Concrete
             return _mapper.Map<List<ResultCustomerDto>>(values);
         }
 
-        public async Task TInsertAsync(CreateCustomerDto dto)
+        public async Task<int> TInsertAsync(CreateCustomerDto dto)
         {
             var value = _mapper.Map<Customer>(dto);
             await _customerDal.InsertAsync(value);
+            return value.CustomerId;
         }
         
 

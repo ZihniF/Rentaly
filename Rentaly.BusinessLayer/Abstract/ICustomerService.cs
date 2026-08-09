@@ -10,7 +10,7 @@ namespace Rentaly.BusinessLayer.Abstract
     {
         Task<List<ResultCustomerDto>> TGetListAsync();
         Task<GetCustomerByIdDto> TGetByIdAsync(int id);
-        Task TInsertAsync (CreateCustomerDto dto);
+        Task<int> TInsertAsync (CreateCustomerDto dto);
         Task TUpdateAsync (UpdateCustomerDto dto);
         Task TDeleteAsync (int id);
     }

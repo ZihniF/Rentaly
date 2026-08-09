@@ -1,0 +1,54 @@
+@model Rentaly.EntityLayer.Entities.HomeContent
+@using Rentaly.WebUI.Models
+@{
+    ViewData["Title"] = "İçerik Detayı";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    var definition = HomeSectionCatalog.All.First(x => x.Section == Model.Section);
+}
+
+<div class="page-header d-flex justify-content-between align-items-start gap-3">
+    <div>
+        <span class="badge bg-primary mb-2">@definition.Name</span>
+        <h1 class="page-title">@Model.Title</h1>
+        <p class="page-subtitle">Bu kaydın frontend ana sayfasında kullanılan tüm bilgileri.</p>
+    </div>
+    <span class="badge @(Model.IsActive ? "bg-success" : "bg-secondary") fs-6">@(Model.IsActive ? "Yayında" : "Pasif")</span>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-8">
+        <div class="table-card p-4 h-100">
+            <div class="row g-4">
+                <div class="col-md-6"><div class="text-muted small mb-1">Bölüm</div><div class="fw-semibold">@Model.Section.DisplayName()</div></div>
+                <div class="col-md-3"><div class="text-muted small mb-1">Gösterim sırası</div><div class="fw-semibold">@Model.DisplayOrder</div></div>
+                <div class="col-md-3"><div class="text-muted small mb-1">Kayıt numarası</div><div class="fw-semibold">#@Model.HomeContentId</div></div>
+                <div class="col-12"><hr class="my-0" /></div>
+                <div class="col-12"><div class="text-muted small mb-1">Başlık / Soru</div><div class="fs-5 fw-semibold">@Model.Title</div></div>
+                <div class="col-12"><div class="text-muted small mb-1">Alt başlık / Değer / Konum</div><div>@(string.IsNullOrWhiteSpace(Model.Subtitle) ? "—" : Model.Subtitle)</div></div>
+                <div class="col-12"><div class="text-muted small mb-1">Açıklama / Cevap / Yorum</div><div class="lh-lg" style="white-space:pre-line">@(string.IsNullOrWhiteSpace(Model.Description) ? "—" : Model.Description)</div></div>
+                <div class="col-md-6"><div class="text-muted small mb-1">Görsel adresi</div><div class="text-break">@(string.IsNullOrWhiteSpace(Model.ImageUrl) ? "—" : Model.ImageUrl)</div></div>
+                <div class="col-md-6"><div class="text-muted small mb-1">İkon</div><div>@(string.IsNullOrWhiteSpace(Model.Icon) ? "—" : Model.Icon)</div></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="table-card p-4">
+            <h5 class="mb-3">İşlemler</h5>
+            <div class="d-grid gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.HomeContentId" asp-route-section="@Model.Section" class="btn btn-primary"><i class="fa-solid fa-pen-to-square me-1"></i> İçeriği düzenle</a>
+                <a asp-action="Index" asp-route-section="@Model.Section" class="btn btn-light"><i class="fa-solid fa-arrow-left me-1"></i> @definition.Name listesine dön</a>
+                <form asp-action="Delete" asp-route-id="@Model.HomeContentId" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('Bu içerik kalıcı olarak silinsin mi?')"><i class="fa-solid fa-trash-can me-1"></i> İçeriği sil</button>
+                </form>
+            </div>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+        {
+            <div class="table-card p-3 mt-4">
+                <div class="text-muted small mb-2">Görsel önizleme</div>
+                <img src="@Model.ImageUrl" alt="@Model.Title" class="img-fluid rounded" />
+            </div>
+        }
+    </div>
+</div>

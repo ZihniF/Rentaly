@@ -1,0 +1,73 @@
+@model Rentaly.EntityLayer.Entities.HomeContent
+@using Rentaly.WebUI.Models
+@{
+    var isEdit = Model.HomeContentId > 0;
+    ViewData["Title"] = isEdit ? "Ana Sayfa İçeriğini Düzenle" : "Ana Sayfa İçeriği Ekle";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="page-header">
+    <h1 class="page-title">@ViewData["Title"]</h1>
+    <p class="page-subtitle">Kaydettiğiniz aktif içerik frontend ana sayfasında doğrudan yayınlanır.</p>
+</div>
+
+<div class="form-card" style="max-width:900px">
+    <form method="post">
+        @Html.AntiForgeryToken()
+        <input asp-for="HomeContentId" type="hidden" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <div class="row g-3">
+            <div class="col-md-8">
+                <label asp-for="Section" class="form-label">Ana sayfa bölümü</label>
+                <select asp-for="Section" asp-items="Html.GetEnumSelectList<Rentaly.EntityLayer.Enums.HomeSectionType>()" class="form-select"></select>
+                <div class="form-text">Process, Future, İstatistik, Ödül, Testimonial veya FAQ seçin.</div>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="DisplayOrder" class="form-label">Gösterim sırası</label>
+                <input asp-for="DisplayOrder" type="number" min="0" max="999" class="form-control" />
+                <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="Title" class="form-label">Başlık / Soru / İstatistik etiketi</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="Subtitle" class="form-label">Alt başlık / İstatistik değeri / Konum</label>
+                <input asp-for="Subtitle" class="form-control" placeholder="Örn: 15.425+ veya İstanbul" />
+                <span asp-validation-for="Subtitle" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="Description" class="form-label">Açıklama / FAQ cevabı / Müşteri yorumu</label>
+                <textarea asp-for="Description" class="form-control" rows="6"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="col-md-7">
+                <label asp-for="ImageUrl" class="form-label">Görsel adresi</label>
+                <input asp-for="ImageUrl" class="form-control" placeholder="/rentaly/images/testimonial/1.jpg" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div>
+            <div class="col-md-5">
+                <label asp-for="Icon" class="form-label">İkon adı</label>
+                <input asp-for="Icon" class="form-control" placeholder="car, calendar, award..." />
+                <span asp-validation-for="Icon" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <div class="form-check form-switch">
+                    <input asp-for="IsActive" class="form-check-input" />
+                    <label asp-for="IsActive" class="form-check-label">Frontend ana sayfasında yayınla</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+            <a asp-action="Index" asp-route-section="@Model.Section" class="btn btn-light">Vazgeç</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

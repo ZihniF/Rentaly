@@ -7,8 +7,8 @@ namespace Rentaly.EntityLayer.Entities
     public class Car
     {
         public int CarId { get; set; }
-        public string PlateNumber { get; set; }
-        public string VIN { get; set; } // Şasi No
+        public string PlateNumber { get; set; } = string.Empty;
+        public string VIN { get; set; } = string.Empty; // Şasi No
         public int BrandId { get; set; }
         public Brand Brand { get; set; } = null!;
         public int ModelId { get; set; }
@@ -23,10 +23,10 @@ namespace Rentaly.EntityLayer.Entities
         public decimal DepositAmount { get; set; }
         public bool IsAvailable { get; set; }
         public bool IsActive { get; set; }
-        public string ImageUrl { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
         public int SeatCount { get; set; }
         public int LuggageCount { get; set; }
-        public string FuelType { get; set; }
+        public string FuelType { get; set; } = string.Empty;
         public List<Rental> Rentals { get; set; } = new();
 
 

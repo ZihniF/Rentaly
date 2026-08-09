@@ -88,5 +88,31 @@ namespace Rentaly.DataAccessLayer.EntityFramework
 
             return true;
         }
+
+        public async Task<bool> TryCreateBookingAsync(Customer customer, Rental rental)
+        {
+            await using var transaction = await _rentalyContext.Database.BeginTransactionAsync(
+                IsolationLevel.Serializable);
+
+            var hasConflict = await _rentalyContext.Rentals.AnyAsync(x =>
+                x.CarId == rental.CarId &&
+                (x.Status == RentalStatus.Pending || x.Status == RentalStatus.Approved) &&
+                rental.PickupDate < x.ReturnDate &&
+                rental.ReturnDate > x.PickupDate);
+
+            if (hasConflict)
+            {
+                await transaction.RollbackAsync();
+                return false;
+            }
+
+            await _rentalyContext.Customers.AddAsync(customer);
+            await _rentalyContext.SaveChangesAsync();
+            rental.CustomerId = customer.CustomerId;
+            await _rentalyContext.Rentals.AddAsync(rental);
+            await _rentalyContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+            return true;
+        }
     }
 }

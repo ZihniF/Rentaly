@@ -735,9 +735,10 @@
             const name = row.dataset.name || '';
             const id = row.dataset.id || '';
             const show = !q || name.includes(q) || id.includes(q);
-            row.style.display = show ? '' : 'none';
+            row.dataset.filtered = show ? 'true' : 'false';
             if (show) visible++;
         });
+        currentPage = 1;
         document.getElementById('statFiltered').textContent = visible;
         document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
         buildPaging();
@@ -785,7 +786,8 @@
     function resetCatFilters() {
         document.getElementById('catSearch').value = '';
         document.getElementById('sortSelect').value = 'id-asc';
-        allRows().forEach(r => r.style.display = '');
+        allRows().forEach(r => r.dataset.filtered = 'true');
+        currentPage = 1;
         document.getElementById('statFiltered').textContent = allRows().length;
         document.getElementById('emptyState').style.display = 'none';
         sortBy('id', 'asc');
@@ -797,17 +799,16 @@
     let currentPage = 1;
 
     function buildPaging() {
-        const visible = allRows().filter(r => r.style.display !== 'none');
-        const total = visible.length;
+        const rows = allRows();
+        const filteredRows = rows.filter(r => r.dataset.filtered !== 'false');
+        const total = filteredRows.length;
         const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
         if (currentPage > pages) currentPage = pages;
 
-        visible.forEach((r, i) => {
+        rows.forEach(r => r.style.display = 'none');
+        filteredRows.forEach((r, i) => {
             r.style.display = (i >= (currentPage - 1) * PAGE_SIZE && i < currentPage * PAGE_SIZE) ? '' : 'none';
         });
-
-        // Gizlenenleri gizle (filtered out)
-        allRows().filter(r => r.getAttribute('data-hidden') === 'true').forEach(r => r.style.display = 'none');
 
         const info = document.getElementById('pagingInfo');
         const from = total === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;

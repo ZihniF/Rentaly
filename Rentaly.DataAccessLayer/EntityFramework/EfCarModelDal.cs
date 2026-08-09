@@ -2,16 +2,34 @@
 using Rentaly.DataAccessLayer.Concrete;
 using Rentaly.DataAccessLayer.RepositoryDesignPattern;
 using Rentaly.EntityLayer.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace Rentaly.DataAccessLayer.EntityFramework
 {
     public class EfCarModelDal : GenericRepository<CarModel>, ICarModelDal
     {
+        private readonly RentalyContext _context;
+
         public EfCarModelDal(RentalyContext context) : base(context)
         {
+            _context = context;
         }
+
+        public Task<List<CarModel>> GetAllWithBrandAsync() =>
+            _context.CarModels
+                .AsNoTracking()
+                .Include(x => x.Brand)
+                .OrderBy(x => x.Brand.BrandName)
+                .ThenBy(x => x.ModelName)
+                .ToListAsync();
+
+        public Task<List<CarModel>> GetWithActiveCarsAsync() =>
+            _context.CarModels
+                .AsNoTracking()
+                .Include(x => x.Brand)
+                .Where(x => x.Cars.Any(car => car.IsActive && car.IsAvailable))
+                .OrderBy(x => x.Brand.BrandName)
+                .ThenBy(x => x.ModelName)
+                .ToListAsync();
     }
 }

@@ -2,11 +2,12 @@
 
 namespace Rentaly.WebUI.Controllers
 {
-    public class AdminLayout : Controller
+    public class AdminLayoutController : Controller
     {
+        [HttpGet("/admin")]
         public IActionResult Index()
         {
-            return View();
+            return View("Dashboard");
         }
     }
 }

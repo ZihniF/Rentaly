@@ -1,0 +1,4 @@
+@model Rentaly.EntityLayer.Entities.Branch
+@{ ViewData["Title"] = "Şube Düzenle"; Layout = "~/Views/AdminLayout/Index.cshtml"; }
+<div class="page-header"><h1 class="page-title">Şube Düzenle</h1></div>
+<div class="form-card" style="max-width:700px"><form method="post">@Html.AntiForgeryToken()<input asp-for="BranchId" type="hidden"><div class="mb-3"><label class="form-label">Şube adı</label><input asp-for="BranchName" class="form-control"></div><div class="mb-3"><label class="form-label">Şehir</label><input asp-for="City" class="form-control"></div><div class="mb-3"><label class="form-label">Adres</label><textarea asp-for="Address" class="form-control"></textarea></div><button class="btn btn-primary">Kaydet</button></form></div>

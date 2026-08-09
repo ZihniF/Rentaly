@@ -1,0 +1,105 @@
+@model Rentaly.WebUI.Models.BookingViewModel
+@{ ViewData["Title"] = "Rezervasyon"; }
+
+<section class="booking-hero">
+    <div class="container">
+        <span>Güvenli rezervasyon</span>
+        <h1>Yolculuğunuzu planlayın</h1>
+        <p>Kimlik doğrulaması gerekmez. Talebiniz admin onayından sonra kesinleşir.</p>
+    </div>
+</section>
+
+<section class="section booking-wrap">
+    <div class="container">
+        <form method="post" class="booking-card">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="validation"></div>
+            <div class="booking-step">
+                <b>01</b>
+                <div>
+                    <h2>Araç ve tarihler</h2>
+                    <div class="form-grid">
+                        <label>Araç<select asp-for="CarId"><option value="">Araç seçin</option>@foreach (var x in Model.Cars.Where(x => x.IsActive)){<option value="@x.CarId">@x.Brand?.BrandName @x.Model?.ModelName — @x.DailyPrice.ToString("N0") ₺/gün</option>}</select></label>
+                        <label>Alış şubesi<select asp-for="PickupBranchId"><option value="">Şube seçin</option>@foreach (var x in Model.Branches){<option value="@x.BranchId">@x.City — @x.BranchName</option>}</select></label>
+                        <label>İade şubesi<select asp-for="ReturnBranchId"><option value="">Şube seçin</option>@foreach (var x in Model.Branches){<option value="@x.BranchId">@x.City — @x.BranchName</option>}</select></label>
+                        <label>Alış<input asp-for="PickupDate" type="datetime-local" /></label>
+                        <label>İade<input asp-for="ReturnDate" type="datetime-local" /></label>
+                    </div>
+                </div>
+            </div>
+            <div class="booking-step">
+                <b>02</b>
+                <div>
+                    <h2>İletişim bilgileriniz</h2>
+                    <div class="identity-scan">
+                        <div class="identity-scan-copy"><strong>Kimlik fotoğrafından otomatik doldur</strong><span>Fotoğraf cihazınızda işlenir; sunucuya yüklenmez ve kimlik doğrulaması yapılmaz.</span></div>
+                        <label class="identity-upload" for="identityPhoto"><span>📷</span> Kamera veya dosya seç</label>
+                        <input id="identityPhoto" type="file" accept="image/*" capture="environment" hidden />
+                        <div id="identityPreviewWrap" class="identity-preview" hidden><img id="identityPreview" alt="Seçilen kimlik fotoğrafı önizlemesi" /><div><strong id="ocrStatus">Fotoğraf hazırlanıyor…</strong><progress id="ocrProgress" max="100" value="0"></progress></div></div>
+                    </div>
+                    <div class="form-grid">
+                        <label>Ad<input asp-for="Name" autocomplete="given-name" /></label>
+                        <label>Soyad<input asp-for="Surname" autocomplete="family-name" /></label>
+                        <label>T.C. kimlik no <span class="optional">(isteğe bağlı)</span><input asp-for="IdentityNumber" inputmode="numeric" maxlength="11" autocomplete="off" /></label>
+                        <label>E-posta<input asp-for="Email" autocomplete="email" /></label>
+                        <label>Telefon<input asp-for="Phone" autocomplete="tel" /></label>
+                    </div>
+                </div>
+            </div>
+            <div class="booking-note">🔒 Talebiniz oluştuğu anda araç seçilen tarih aralığında diğer taleplere kapatılır.</div>
+            <button class="booking-submit">Rezervasyon talebi oluştur →</button>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('identityPhoto');
+            const previewWrap = document.getElementById('identityPreviewWrap');
+            const preview = document.getElementById('identityPreview');
+            const status = document.getElementById('ocrStatus');
+            const progress = document.getElementById('ocrProgress');
+            input.addEventListener('change', async () => {
+                const file = input.files?.[0];
+                if (!file) return;
+                if (!file.type.startsWith('image/')) { status.textContent = 'Lütfen bir görsel dosyası seçin.'; return; }
+                preview.src = URL.createObjectURL(file);
+                previewWrap.hidden = false;
+                progress.value = 0;
+                status.textContent = 'Kimlik bilgileri okunuyor…';
+                try {
+                    if (!window.Tesseract) throw new Error('OCR bileşeni yüklenemedi. İnternet bağlantınızı kontrol edin.');
+                    const result = await Tesseract.recognize(file, 'tur+eng', { logger: message => {
+                        if (message.status === 'recognizing text') { progress.value = Math.round((message.progress || 0) * 100); status.textContent = `Kimlik bilgileri okunuyor… %${progress.value}`; }
+                    }});
+                    const fields = parseTurkishIdentity(result.data.text || '');
+                    if (fields.name) document.getElementById('Name').value = fields.name;
+                    if (fields.surname) document.getElementById('Surname').value = fields.surname;
+                    if (fields.identityNumber) document.getElementById('IdentityNumber').value = fields.identityNumber;
+                    const count = [fields.name, fields.surname, fields.identityNumber].filter(Boolean).length;
+                    status.textContent = count > 0 ? `${count} alan dolduruldu. Lütfen bilgileri kontrol edin.` : 'Bilgiler okunamadı. Daha net ve yansımasız bir fotoğraf deneyin.';
+                    progress.value = 100;
+                } catch (error) { status.textContent = error.message || 'Fotoğraf okunurken bir sorun oluştu.'; progress.value = 0; }
+            });
+        });
+        function parseTurkishIdentity(text) {
+            const lines = text.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+            const normalized = lines.map(x => normalizeOcr(x));
+            const identityMatch = normalized.join(' ').match(/\b[1-9][0-9]{10}\b/);
+            return { identityNumber: identityMatch?.[0] || '', surname: valueAfterLabel(lines, normalized, ['SOYADI', 'SURNAME']), name: valueAfterLabel(lines, normalized, ['ADI', 'GIVEN NAME', 'GIVEN NAMES']) };
+        }
+        function valueAfterLabel(original, normalized, labels) {
+            for (let i = 0; i < normalized.length; i++) {
+                if (!labels.some(label => normalized[i].includes(label))) continue;
+                const parts = original[i].split(/[:/]/); const inline = parts.length > 1 ? parts.at(-1).trim() : '';
+                if (inline && !labels.some(label => normalizeOcr(inline).includes(label))) return cleanPersonName(inline);
+                for (let j = i + 1; j < Math.min(original.length, i + 3); j++) { const candidate = cleanPersonName(original[j]); if (candidate && !/^[0-9]+$/.test(candidate)) return candidate; }
+            }
+            return '';
+        }
+        function normalizeOcr(value) { return value.toLocaleUpperCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+        function cleanPersonName(value) { return value.replace(/[^A-Za-zÇĞİÖŞÜçğıöşü ]/g, ' ').replace(/\s+/g, ' ').trim().toLocaleLowerCase('tr-TR').replace(/(^|\s)\p{L}/gu, x => x.toLocaleUpperCase('tr-TR')); }
+    </script>
+}

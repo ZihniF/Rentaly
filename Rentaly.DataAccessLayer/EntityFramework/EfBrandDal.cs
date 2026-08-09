@@ -2,16 +2,24 @@
 using Rentaly.DataAccessLayer.Concrete;
 using Rentaly.DataAccessLayer.RepositoryDesignPattern;
 using Rentaly.EntityLayer.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace Rentaly.DataAccessLayer.EntityFramework
 {
     public class EfBrandDal : GenericRepository<Brand>, IBrandDal
     {
+        private readonly RentalyContext _context;
+
         public EfBrandDal(RentalyContext context) : base(context)
         {
+            _context = context;
         }
+
+        public Task<List<Brand>> GetWithActiveCarsAsync() =>
+            _context.Brands
+                .AsNoTracking()
+                .Where(x => x.Cars.Any(car => car.IsActive && car.IsAvailable))
+                .OrderBy(x => x.BrandName)
+                .ToListAsync();
     }
 }

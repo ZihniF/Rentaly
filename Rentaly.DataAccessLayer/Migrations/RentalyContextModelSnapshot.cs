@@ -230,6 +230,26 @@ namespace Rentaly.DataAccessLayer.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("Rentaly.EntityLayer.Entities.HomeContent", b =>
+                {
+                    b.Property<int>("HomeContentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HomeContentId"));
+
+                    b.Property<string>("Description").HasMaxLength(1500).HasColumnType("nvarchar(1500)");
+                    b.Property<int>("DisplayOrder").HasColumnType("int");
+                    b.Property<string>("Icon").HasMaxLength(100).HasColumnType("nvarchar(100)");
+                    b.Property<string>("ImageUrl").HasMaxLength(500).HasColumnType("nvarchar(500)");
+                    b.Property<bool>("IsActive").HasColumnType("bit");
+                    b.Property<string>("Section").IsRequired().HasMaxLength(30).HasColumnType("nvarchar(30)");
+                    b.Property<string>("Subtitle").HasMaxLength(180).HasColumnType("nvarchar(180)");
+                    b.Property<string>("Title").IsRequired().HasMaxLength(180).HasColumnType("nvarchar(180)");
+                    b.HasKey("HomeContentId");
+                    b.ToTable("HomeContents");
+                });
+
             modelBuilder.Entity("Rentaly.EntityLayer.Entities.Rental", b =>
                 {
                     b.Property<int>("RentalId")

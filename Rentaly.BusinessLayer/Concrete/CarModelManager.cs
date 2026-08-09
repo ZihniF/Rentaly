@@ -1,5 +1,6 @@
 ﻿using Rentaly.BusinessLayer.Abstract;
 using Rentaly.EntityLayer.Entities;
+using Rentaly.DataAccessLayer.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,29 +9,41 @@ namespace Rentaly.BusinessLayer.Concrete
 {
     public class CarModelManager : ICarModelService
     {
+        private readonly ICarModelDal _dal;
+        public CarModelManager(ICarModelDal dal) => _dal = dal;
         public Task TDeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            return _dal.DeleteAsync(id);
         }
 
         public Task<CarModel> TGetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return _dal.GetByIdAsync(id);
         }
 
         public Task<List<CarModel>> TGetListAsync()
         {
-            throw new NotImplementedException();
+            return _dal.GetListAsync();
+        }
+
+        public Task<List<CarModel>> TGetAllWithBrandAsync()
+        {
+            return _dal.GetAllWithBrandAsync();
+        }
+
+        public Task<List<CarModel>> TGetWithActiveCarsAsync()
+        {
+            return _dal.GetWithActiveCarsAsync();
         }
 
         public Task TInsertAsync(CarModel entity)
         {
-            throw new NotImplementedException();
+            return _dal.InsertAsync(entity);
         }
 
         public Task TUpdateAsync(CarModel entity)
         {
-            throw new NotImplementedException();
+            return _dal.UpdateAsync(entity);
         }
     }
 }

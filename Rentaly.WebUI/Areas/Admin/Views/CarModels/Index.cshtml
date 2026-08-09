@@ -1,0 +1,37 @@
+@model List<Rentaly.EntityLayer.Entities.CarModel>
+@{
+    ViewData["Title"] = "Model Yönetimi";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="page-header d-flex justify-content-between">
+    <div>
+        <h1 class="page-title">Model Yönetimi</h1>
+        <p class="page-subtitle">Filodaki araç modellerini yönetin.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">Yeni model</a>
+</div>
+
+<div class="table-card">
+    <table class="table align-middle">
+        <thead>
+            <tr><th>#</th><th>Marka Model</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.CarModelId</td>
+                    <td><strong>@item.Brand?.BrandName @item.ModelName</strong></td>
+                    <td class="d-flex gap-2">
+                        <a asp-action="Edit" asp-route-id="@item.CarModelId" class="btn btn-sm btn-outline-primary">Düzenle</a>
+                        <form asp-action="Delete" asp-route-id="@item.CarModelId" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bu modeli silmek istediğinize emin misiniz?')">Sil</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

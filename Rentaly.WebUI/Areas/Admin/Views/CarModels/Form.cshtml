@@ -1,0 +1,4 @@
+@model Rentaly.EntityLayer.Entities.CarModel
+@{ var edit = Model.CarModelId > 0; ViewData["Title"] = edit ? "Model Düzenle" : "Model Ekle"; Layout = "~/Views/AdminLayout/Index.cshtml"; }
+<div class="page-header"><h1 class="page-title">@ViewData["Title"]</h1></div>
+<div class="form-card" style="max-width:700px"><form method="post">@Html.AntiForgeryToken()<input asp-for="CarModelId" type="hidden"><div class="mb-3"><label class="form-label">Marka</label><select asp-for="BrandId" asp-items="ViewBag.Brands" class="form-select"></select></div><div class="mb-3"><label class="form-label">Model adı</label><input asp-for="ModelName" class="form-control" required></div><button class="btn btn-primary">Kaydet</button> <a asp-action="Index" class="btn btn-light">Vazgeç</a></form></div>

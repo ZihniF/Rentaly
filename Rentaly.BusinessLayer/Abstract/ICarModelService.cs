@@ -7,5 +7,7 @@ namespace Rentaly.BusinessLayer.Abstract
 {
     public interface ICarModelService:IGenericService<CarModel>
     {
+        Task<List<CarModel>> TGetAllWithBrandAsync();
+        Task<List<CarModel>> TGetWithActiveCarsAsync();
     }
 }

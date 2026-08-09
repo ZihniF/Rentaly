@@ -120,6 +120,11 @@ namespace Rentaly.DataAccessLayer.Concrete
                     x.ReturnDate
                 })
                 .HasDatabaseName("IX_Rentals_Availability");
+
+            modelBuilder.Entity<HomeContent>()
+                .Property(x => x.Section)
+                .HasConversion<string>()
+                .HasMaxLength(30);
         }
 
         public DbSet<Branch> Branches { get; set; }
@@ -129,5 +134,6 @@ namespace Rentaly.DataAccessLayer.Concrete
         public DbSet<Category> Categories { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Rental> Rentals { get; set; }
+        public DbSet<HomeContent> HomeContents { get; set; }
     }
 }

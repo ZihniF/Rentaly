@@ -19,13 +19,16 @@ namespace Rentaly.DataAccessLayer.RepositoryDesignPattern
         public async Task DeleteAsync(int id)
         {
             var value= await _context.Set<T>().FindAsync(id);
+            if (value is null)
+                throw new KeyNotFoundException($"{typeof(T).Name} kaydı bulunamadı.");
             _context.Set<T>().Remove(value);
             await _context.SaveChangesAsync();
         }
 
         public async Task<T> GetByIdAsync(int id)
         {
-            return await _context.Set<T>().FindAsync(id);
+            return await _context.Set<T>().FindAsync(id)
+                ?? throw new KeyNotFoundException($"{typeof(T).Name} kaydı bulunamadı.");
         }
 
         public async Task<List<T>> GetListAsync()

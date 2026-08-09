@@ -1,7 +1,7 @@
 ﻿@model Rentaly.EntityLayer.Entities.Car
 
 @{
-    ViewData["Title"] = "Yeni Araç Ekle";
+    ViewData["Title"] = Model?.CarId > 0 ? "Araç Düzenle" : "Yeni Araç Ekle";
     Layout = "~/Views/AdminLayout/Index.cshtml";
     // Controller'dan ViewBag.Categories = new SelectList(categories, "CategoryId", "CategoryName")
 }
@@ -661,8 +661,9 @@
 <div class="row g-4">
     <!-- ═══ Form ═══ -->
     <div class="col-12 col-lg-8">
-        <form asp-action="CreateCar" asp-controller="Car" method="post" id="carCreateForm">
+        <form asp-action="@(Model?.CarId > 0 ? "Edit" : "CreateCar")" asp-controller="Car" method="post" id="carCreateForm">
             @Html.AntiForgeryToken()
+            <input asp-for="CarId" type="hidden" />
 
             <!-- ══════════════════════
                  BÖLÜM 1 — Temel Bilgiler

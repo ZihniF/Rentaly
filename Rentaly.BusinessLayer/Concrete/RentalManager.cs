@@ -14,6 +14,7 @@ namespace Rentaly.BusinessLayer.Concrete
         private readonly ICarDal _carDal;
         private readonly IMapper _mapper;
         private readonly IValidator<CreateRentalDto> _createValidator;
+        private readonly IValidator<CreateBookingDto> _bookingValidator;
         private readonly IValidator<UpdateRentalStatusDto> _statusValidator;
 
         public RentalManager(
@@ -21,12 +22,14 @@ namespace Rentaly.BusinessLayer.Concrete
             ICarDal carDal,
             IMapper mapper,
             IValidator<CreateRentalDto> createValidator,
+            IValidator<CreateBookingDto> bookingValidator,
             IValidator<UpdateRentalStatusDto> statusValidator)
         {
             _rentalDal = rentalDal;
             _carDal = carDal;
             _mapper = mapper;
             _createValidator = createValidator;
+            _bookingValidator = bookingValidator;
             _statusValidator = statusValidator;
         }
 
@@ -56,31 +59,24 @@ namespace Rentaly.BusinessLayer.Concrete
             var car = await _carDal.GetByIdAsync(dto.CarId);
 
             if (car is null)
-                throw new InvalidOperationException(
-                    "Araç bulunamadı.");
-
-            if (!car.IsActive)
-                throw new InvalidOperationException(
-                    "Araç aktif değil.");
-
-            if (!car.IsAvailable)
-                throw new InvalidOperationException(
-                    "Araç kiralamaya uygun değil.");
-
-            var hasConflict =
-                await _rentalDal.HasDateConflictAsync(
-                    dto.CarId,
-                    dto.PickupDate,
-                    dto.ReturnDate);
-
-            if (hasConflict)
             {
                 throw new InvalidOperationException(
-                    "Araç seçilen tarihler arasında müsait değil.");
+                    "Araç bulunamadı.");
             }
 
-            var rentalDayCount =
-                (dto.ReturnDate.Date - dto.PickupDate.Date).Days;
+            if (!car.IsActive)
+            {
+                throw new InvalidOperationException(
+                    "Araç aktif değil.");
+            }
+
+            if (!car.IsAvailable)
+            {
+                throw new InvalidOperationException(
+                    "Araç kiralamaya uygun değil.");
+            }
+
+            var rentalDayCount = GetRentalDayCount(dto.PickupDate, dto.ReturnDate);
 
             var rental = _mapper.Map<Rental>(dto);
 
@@ -89,8 +85,54 @@ namespace Rentaly.BusinessLayer.Concrete
 
             rental.Status = RentalStatus.Pending;
 
-            await _rentalDal.InsertAsync(rental);
+            var isCreated =
+                await _rentalDal.TryCreateRentalAsync(rental);
+
+            if (!isCreated)
+            {
+                throw new InvalidOperationException(
+                    "Araç seçilen tarihler arasında müsait değil.");
+            }
         }
+
+        public async Task<int> TCreateBookingAsync(CreateBookingDto dto)
+        {
+            await _bookingValidator.ValidateAndThrowAsync(dto);
+
+            var car = await _carDal.GetByIdAsync(dto.CarId);
+            if (car is null) throw new InvalidOperationException("Araç bulunamadı.");
+            if (!car.IsActive || !car.IsAvailable)
+                throw new InvalidOperationException("Araç kiralamaya uygun değil.");
+
+            var customer = new Customer
+            {
+                Name = dto.Name.Trim(),
+                Surname = dto.Surname.Trim(),
+                Email = dto.Email.Trim(),
+                Phone = dto.Phone.Trim(),
+                IdentityNumber = dto.IdentityNumber?.Trim() ?? string.Empty,
+                DrivingLicenseNumber = string.Empty,
+                DrivingLicenseDate = DateTime.Today
+            };
+            var rental = new Rental
+            {
+                CarId = dto.CarId,
+                PickupBranchId = dto.PickupBranchId,
+                ReturnBranchId = dto.ReturnBranchId,
+                PickupDate = dto.PickupDate,
+                ReturnDate = dto.ReturnDate,
+                TotalPrice = car.DailyPrice * GetRentalDayCount(dto.PickupDate, dto.ReturnDate),
+                Status = RentalStatus.Pending
+            };
+
+            if (!await _rentalDal.TryCreateBookingAsync(customer, rental))
+                throw new InvalidOperationException("Araç seçilen tarihler arasında müsait değil.");
+
+            return rental.RentalId;
+        }
+
+        private static int GetRentalDayCount(DateTime pickupDate, DateTime returnDate) =>
+            Math.Max(1, (int)Math.Ceiling((returnDate - pickupDate).TotalDays));
 
         public async Task TUpdateStatusAsync(
             UpdateRentalStatusDto dto)
@@ -117,5 +159,7 @@ namespace Rentaly.BusinessLayer.Concrete
 
             await _rentalDal.UpdateAsync(rental);
         }
+
+        public Task TDeleteAsync(int id) => _rentalDal.DeleteAsync(id);
     }
 }

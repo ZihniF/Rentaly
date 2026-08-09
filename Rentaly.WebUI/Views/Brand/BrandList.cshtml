@@ -1,0 +1,3 @@
+@model List<Rentaly.EntityLayer.Entities.Brand>
+@{ ViewData["Title"]="Markalar"; Layout="~/Views/AdminLayout/Index.cshtml"; }
+<div class="page-header d-flex justify-content-between"><h1 class="page-title">Marka Yönetimi</h1><a asp-action="CreateBrand" class="btn btn-primary">Yeni marka</a></div><div class="table-card"><table class="table"><thead><tr><th>#</th><th>Marka</th><th></th></tr></thead><tbody>@foreach(var x in Model){<tr><td>@x.BrandId</td><td>@x.BrandName</td><td class="d-flex gap-2"><a asp-action="Edit" asp-route-id="@x.BrandId" class="btn btn-sm btn-outline-primary">Düzenle</a><form asp-action="Delete" asp-route-id="@x.BrandId" method="post"><button class="btn btn-sm btn-outline-danger">Sil</button></form></td></tr>}</tbody></table></div>

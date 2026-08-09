@@ -1,8 +1,227 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model Rentaly.WebUI.Models.HomeViewModel
+@{
+    ViewData["Title"] = "Araç Kiralama";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero" style="background-image:linear-gradient(90deg,rgba(7,12,17,.82),rgba(7,12,17,.18)),url('/rentaly/images/background/1.jpg')">
+    <div class="container hero-copy">
+        <span class="eyebrow">Yolculuğun özgür hali</span>
+        <h1>Aradığınız <em>araç</em><br />tam burada.</h1>
+        <p>Lokasyonunuzu ve tarihlerinizi seçin, yalnızca gerçekten müsait araçları görün.</p>
+    </div>
+</section>
+
+<section class="container search-panel" aria-label="Araç müsaitlik araması">
+    <form method="get" asp-controller="Home" asp-action="Index" class="search-grid">
+        <label>
+            <span>Teslim alma lokasyonu</span>
+            <select name="branchId" required>
+                <option value="">Şube seçin</option>
+                @foreach (var branch in Model.Branches)
+                {
+                    <option value="@branch.BranchId" selected="@(Model.SelectedBranchId == branch.BranchId)">@branch.City — @branch.BranchName</option>
+                }
+            </select>
+        </label>
+        <label>
+            <span>Alış tarihi</span>
+            <input type="datetime-local" name="pickupDate" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" value="@(Model.PickupDate?.ToString("yyyy-MM-ddTHH:mm"))" required />
+        </label>
+        <label>
+            <span>İade tarihi</span>
+            <input type="datetime-local" name="returnDate" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" value="@(Model.ReturnDate?.ToString("yyyy-MM-ddTHH:mm"))" required />
+        </label>
+        <button type="submit">Müsait araçları bul <span>→</span></button>
+    </form>
+    <div asp-validation-summary="All" class="validation"></div>
+</section>
+
+<section class="section container" id="process">
+    <div class="section-head"><span>Process / İşleyiş</span><h2>Üç adımda yola çıkın</h2></div>
+    @if (Model.Processes.Count > 0)
+    {
+        <div class="process-grid">
+            @foreach (var item in Model.Processes)
+            {
+                <article>
+                    <b>@item.DisplayOrder.ToString("00")</b>
+                    <h3>@item.Title</h3>
+                    <p>@item.Description</p>
+                </article>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-public">İşleyiş bilgileri yakında yayınlanacak.</div>
+    }
+</section>
+
+<section class="section cars-section" id="cars">
+    <div class="container">
+        <div class="section-head split">
+            <div>
+                <span>@(Model.AvailabilitySearchApplied ? "Seçtiğiniz tarihlerde müsait" : "Filomuz")</span>
+                <h2>İlk 10 araç</h2>
+            </div>
+            <a asp-controller="Fleet" asp-action="Index">Tüm araçları gör →</a>
+        </div>
+        <div class="car-grid">
+            @foreach (var car in Model.Cars)
+            {
+                <article class="car-card">
+                    <div class="car-image">
+                        <img src="@(string.IsNullOrWhiteSpace(car.ImageUrl) ? "/rentaly/images/cars-alt/bmw-m5.png" : car.ImageUrl)" alt="@car.Brand?.BrandName @car.Model?.ModelName" />
+                    </div>
+                    <div class="car-body">
+                        <small>@car.Category?.CategoryName · @car.Year · @car.Branch?.City</small>
+                        <h3>@car.Brand?.BrandName @car.Model?.ModelName</h3>
+                        <div class="specs">
+                            <span>@car.SeatCount kişi</span><span>@car.LuggageCount bagaj</span><span>@car.FuelType</span>
+                        </div>
+                        <div class="price">
+                            <strong>@car.DailyPrice.ToString("N0") ₺</strong><span>/ gün</span>
+                            <a asp-controller="Booking" asp-action="Index" asp-route-carId="@car.CarId" asp-route-pickupDate="@Model.PickupDate" asp-route-returnDate="@Model.ReturnDate" asp-route-branchId="@Model.SelectedBranchId">Kirala</a>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+        @if (Model.Cars.Count == 0)
+        {
+            <div class="empty-public">Seçtiğiniz tarihlerde uygun araç bulunamadı. Tarihleri değiştirerek yeniden deneyin.</div>
+        }
+    </div>
+</section>
+
+<section class="future" id="future" style="background-image:linear-gradient(rgba(8,14,18,.88),rgba(8,14,18,.88)),url('/rentaly/images/background/3.jpg')">
+    <div class="container">
+        @if (Model.Futures.Count > 0)
+        {
+            @foreach (var item in Model.Futures)
+            {
+                <div class="future-copy">
+                    <span>Our Future / Geleceğimiz</span>
+                    <h2>@item.Title</h2>
+                    <p>@item.Description</p>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="future-copy"><span>Our Future</span><h2>Gelecek vizyonumuz hazırlanıyor.</h2></div>
+        }
+
+        <div class="section-head stats-heading" id="about"><span>About / İstatistikler</span><h2>Rakamlarla Rentaly</h2></div>
+        <div class="stats">
+            @foreach (var item in Model.Statistics)
+            {
+                <div><strong>@item.Subtitle</strong><span>@item.Title</span></div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section container" id="brands-models">
+    <div class="section-head"><span>Markalar &amp; Modeller</span><h2>Filomuzu keşfedin</h2></div>
+    @if (Model.Brands.Count > 0)
+    {
+        <div class="brand-strip">
+            @foreach (var brand in Model.Brands)
+            {
+                <a asp-controller="Fleet" asp-action="Index" asp-route-Filter.BrandId="@brand.BrandId">
+                    @if (!string.IsNullOrWhiteSpace(brand.ImageUrl))
+                    {
+                        <img src="@brand.ImageUrl" alt="@brand.BrandName" />
+                    }
+                    <strong>@brand.BrandName</strong>
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-public">Marka kayıtları yakında eklenecek.</div>
+    }
+
+    <div class="model-pills">
+        @foreach (var carModel in Model.Models)
+        {
+            <a asp-controller="Fleet" asp-action="Index" asp-route-Filter.ModelId="@carModel.CarModelId">
+                <small>@carModel.Brand?.BrandName</small> @carModel.ModelName
+            </a>
+        }
+    </div>
+</section>
+
+<section class="section soft" id="awards">
+    <div class="container">
+        <div class="section-head"><span>Başarılarımız</span><h2>Ödüller</h2></div>
+        @if (Model.Awards.Count > 0)
+        {
+            <div class="award-grid">
+                @foreach (var item in Model.Awards)
+                {
+                    <article><div>✦</div><small>@item.Subtitle</small><h3>@item.Title</h3><p>@item.Description</p></article>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-public">Ödül içerikleri yakında yayınlanacak.</div>
+        }
+    </div>
+</section>
+
+<section class="section container" id="testimonials">
+    <div class="section-head"><span>Testimonial</span><h2>Misafirlerimizin deneyimleri</h2></div>
+    @if (Model.Testimonials.Count > 0)
+    {
+        <div class="testimonial-grid">
+            @foreach (var item in Model.Testimonials)
+            {
+                <blockquote>
+                    <div>★★★★★</div><p>“@item.Description”</p>
+                    <footer>
+                        @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl" alt="@item.Title" />
+                        }
+                        <strong>@item.Title</strong><span>@item.Subtitle</span>
+                    </footer>
+                </blockquote>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-public">Müşteri yorumları yakında yayınlanacak.</div>
+    }
+</section>
+
+<section class="section faq-section" id="faq">
+    <div class="container faq-layout">
+        <div class="section-head"><span>Yardım</span><h2>Sık Sorulan Sorular</h2><p>Rezervasyon öncesi merak ettikleriniz.</p></div>
+        @if (Model.Faqs.Count > 0)
+        {
+            <div class="accordion" id="faqAccordion">
+                @for (var i = 0; i < Model.Faqs.Count; i++)
+                {
+                    var item = Model.Faqs[i];
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button @(i > 0 ? "collapsed" : "")" type="button" data-bs-toggle="collapse" data-bs-target="#faq-@i" aria-expanded="@(i == 0 ? "true" : "false")">@item.Title</button>
+                        </h3>
+                        <div id="faq-@i" class="accordion-collapse collapse @(i == 0 ? "show" : "")" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">@item.Description</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-public">Sık sorulan sorular yakında yayınlanacak.</div>
+        }
+    </div>
+</section>

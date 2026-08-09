@@ -7,7 +7,7 @@ namespace Rentaly.EntityLayer.Entities
     public class CarModel
     {
         public int CarModelId { get; set; }
-        public string ModelName { get; set; }
+        public string ModelName { get; set; } = string.Empty;
         public int BrandId { get; set; }
         public Brand Brand { get; set; } = null!;
 

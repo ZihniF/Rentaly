@@ -15,5 +15,7 @@ namespace Rentaly.DataAccessLayer.Abstract
             int? excludedRentalId = null);
 
         Task<bool> TryCreateRentalAsync(Rental rental);
+
+        Task<bool> TryCreateBookingAsync(Customer customer, Rental rental);
     }
 }

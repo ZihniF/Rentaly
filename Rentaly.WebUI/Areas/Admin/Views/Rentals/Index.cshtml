@@ -1,0 +1,63 @@
+@model List<Rentaly.DtoLayer.RentalDtos.ResultRentalDto>
+@using Rentaly.EntityLayer.Enums
+@{
+    ViewData["Title"] = "Rezervasyon Yönetimi";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Rezervasyon Yönetimi</h1>
+        <p class="page-subtitle">Bekleyen talepleri onaylayın veya reddedin.</p>
+    </div>
+</div>
+
+@if (TempData["Success"] is not null) { <div class="alert alert-success">@TempData["Success"]</div> }
+@if (TempData["Warning"] is not null) { <div class="alert alert-warning">@TempData["Warning"]</div> }
+@if (TempData["Error"] is not null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+
+<div class="table-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr><th>#</th><th>Araç</th><th>Müşteri</th><th>Tarih</th><th>Toplam</th><th>Durum</th><th>İşlem</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var rental in Model)
+                {
+                    <tr>
+                        <td>#@rental.RentalId</td>
+                        <td><strong>@rental.BrandName @rental.ModelName</strong><br><small>@rental.PlateNumber</small></td>
+                        <td>@rental.CustomerFullName<br><small>@rental.CustomerEmail</small></td>
+                        <td>@rental.PickupDate.ToString("dd.MM.yyyy HH:mm")<br><small>@rental.ReturnDate.ToString("dd.MM.yyyy HH:mm")</small></td>
+                        <td>@rental.TotalPrice.ToString("N2") ₺</td>
+                        <td><span class="badge @(rental.Status == RentalStatus.Pending ? "bg-warning" : rental.Status == RentalStatus.Approved ? "bg-success" : "bg-secondary")">@rental.Status</span></td>
+                        <td>
+                            <div class="d-flex gap-2 flex-wrap">
+                                @if (rental.Status == RentalStatus.Pending)
+                                {
+                                    <form asp-action="UpdateStatus" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@rental.RentalId">
+                                        <input type="hidden" name="status" value="@RentalStatus.Approved">
+                                        <button type="submit" class="btn btn-sm btn-success"><i class="fa-solid fa-check"></i> Onayla</button>
+                                    </form>
+                                    <form asp-action="UpdateStatus" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@rental.RentalId">
+                                        <input type="hidden" name="status" value="@RentalStatus.Rejected">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Reddet</button>
+                                    </form>
+                                }
+                                <form asp-action="Delete" asp-route-id="@rental.RentalId" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bu rezervasyonu kalıcı olarak silmek istediğinize emin misiniz?')">Sil</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
