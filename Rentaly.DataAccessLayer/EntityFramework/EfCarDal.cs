@@ -11,14 +11,18 @@ namespace Rentaly.DataAccessLayer.EntityFramework
 {
     public class EfCarDal : GenericRepository<Car>, ICarDal
     {
+        private readonly RentalyContext _rentalyContext;
         public EfCarDal(RentalyContext context) : base(context)
         {
+            _rentalyContext = context;
         }
 
         public async Task<List<Car>> GetAllCarsWithCategoryAsync()
         {
-            var context = new RentalyContext();
-            var values = await context.Cars.Include(x => x.Category).ToListAsync();
+            var values = await _rentalyContext.Cars
+            .Include(x => x.Category)
+            .ToListAsync();
+
             return values;
         }
     }
