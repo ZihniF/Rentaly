@@ -1,11 +1,15 @@
-﻿using Rentaly.EntityLayer.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Rentaly.DtoLayer.RentalDtos;
 
 namespace Rentaly.BusinessLayer.Abstract
 {
-    public interface IRentalService:IGenericService<Rental>
+    public interface IRentalService
     {
+        Task<List<ResultRentalDto>> TGetListAsync();
+
+        Task<GetRentalByIdDto?> TGetByIdAsync(int id);
+
+        Task TCreateAsync(CreateRentalDto dto);
+
+        Task TUpdateStatusAsync(UpdateRentalStatusDto dto);
     }
 }
