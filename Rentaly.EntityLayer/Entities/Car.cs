@@ -10,7 +10,9 @@ namespace Rentaly.EntityLayer.Entities
         public string PlateNumber { get; set; }
         public string VIN { get; set; } // Şasi No
         public int BrandId { get; set; }
+        public Brand Brand { get; set; } = null!;
         public int ModelId { get; set; }
+        public CarModel Model { get; set; } = null!;
         public int CategoryId { get; set; }
         public Category Category { get; set; }
         public int BranchId { get; set; }
@@ -25,7 +27,7 @@ namespace Rentaly.EntityLayer.Entities
         public int SeatCount { get; set; }
         public int LuggageCount { get; set; }
         public string FuelType { get; set; }
-        
+        public List<Rental> Rentals { get; set; } = new();
 
 
     }

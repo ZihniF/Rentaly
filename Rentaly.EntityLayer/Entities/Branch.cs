@@ -10,6 +10,8 @@ namespace Rentaly.EntityLayer.Entities
         public string BranchName { get; set; }
         public string City { get; set; }
         public string Address { get; set; }
-        public List<Car> Cars { get; set; }
+        public List<Car> Cars { get; set; } = new();
+        public List<Rental> PickupRentals { get; set; } = new();
+        public List<Rental> ReturnRentals { get; set; } = new();
     }
 }

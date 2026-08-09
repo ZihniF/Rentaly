@@ -15,5 +15,7 @@ namespace Rentaly.EntityLayer.Entities
         public string DrivingLicenseNumber { get; set; }
         public DateTime DrivingLicenseDate { get; set; }
 
+        public List<Rental> Rentals { get; set; } = new();
+
     }
 }
