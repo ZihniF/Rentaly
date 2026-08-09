@@ -16,14 +16,14 @@ namespace Rentaly.BusinessLayer.Concrete
             _branchDal = branchDal;
         }
 
-        public Task TDeleteAsync(int id)
+        public async Task TDeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            await _branchDal.DeleteAsync(id);
         }
 
-        public Task<Branch> TGetByIdAsync(int id)
+        public async Task<Branch> TGetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _branchDal.GetByIdAsync(id); 
         }
 
         public async Task<List<Branch>> TGetListAsync()
@@ -31,14 +31,15 @@ namespace Rentaly.BusinessLayer.Concrete
             return await _branchDal.GetListAsync();
         }
 
-        public Task TInsertAsync(Branch entity)
+        public async Task TInsertAsync(Branch entity)
         {
-            throw new NotImplementedException();
+            await _branchDal.InsertAsync(entity);
         }
 
-        public Task TUpdateAsync(Branch entity)
+        public async Task TUpdateAsync(Branch entity)
         {
-            throw new NotImplementedException();
+            await _branchDal.UpdateAsync(entity);
         }
+        
     }
 }

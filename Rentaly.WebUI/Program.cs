@@ -16,6 +16,9 @@ builder.Services.AddScoped<ICarDal, EfCarDal>();
 builder.Services.AddScoped<IBranchService, BranchManager>();
 builder.Services.AddScoped<IBranchDal, EfBranchDal>();
 
+builder.Services.AddScoped<IBrandService, BrandManager>();
+builder.Services.AddScoped<IBrandDal, EfBrandDal>();
+
 builder.Services.AddDbContext<RentalyContext>();
 
 
