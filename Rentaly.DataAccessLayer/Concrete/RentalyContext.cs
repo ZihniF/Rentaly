@@ -12,7 +12,11 @@ namespace Rentaly.DataAccessLayer.Concrete
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            modelBuilder.Entity<CarModel>()
+                .HasOne(x => x.Brand)
+                .WithMany(x => x.CarModels)
+                .HasForeignKey(x => x.BrandId)
+                .OnDelete(DeleteBehavior.Restrict);
             // Car alan ayarları
             modelBuilder.Entity<Car>()
                 .Property(x => x.PlateNumber)
