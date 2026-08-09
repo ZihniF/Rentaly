@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Rentaly.EntityLayer.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 namespace Rentaly.DataAccessLayer.Concrete
 {
     public class RentalyContext : DbContext
     {
+        public RentalyContext(DbContextOptions<RentalyContext> options) : base(options)
+        {
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -65,10 +66,7 @@ namespace Rentaly.DataAccessLayer.Concrete
                 .HasConversion<string>()
                 .HasMaxLength(20);
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server=DESKTOP-GJQKLK1;Database=RentalyDb;Trusted_Connection=True; TrustServerCertificate=True;");
-        }
+        
         public DbSet<Branch> Branches { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Car> Cars { get; set; }

@@ -1,4 +1,5 @@
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Rentaly.BusinessLayer.Abstract;
 using Rentaly.BusinessLayer.Concrete;
 using Rentaly.BusinessLayer.ValidationRules;
@@ -31,7 +32,10 @@ builder.Services.AddScoped<IValidator<UpdateRentalStatusDto>, UpdateRentalStatus
 builder.Services.AddScoped<IRentalDal, EfRentalDal>();
 builder.Services.AddScoped<IRentalService, RentalManager>();
 
-builder.Services.AddDbContext<RentalyContext>();
+builder.Services.AddDbContext<RentalyContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString(
+            "DefaultConnection")));
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
