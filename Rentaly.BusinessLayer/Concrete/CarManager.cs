@@ -1,4 +1,5 @@
 ﻿using Rentaly.BusinessLayer.Abstract;
+using Rentaly.DataAccessLayer.Abstract;
 using Rentaly.EntityLayer.Entities;
 using System;
 using System.Collections.Generic;
@@ -8,29 +9,41 @@ namespace Rentaly.BusinessLayer.Concrete
 {
     public class CarManager : ICarService
     {
-        public Task TDeleteAsync(int id)
+        private readonly ICarDal _carDal;
+
+        public CarManager(ICarDal carDal)
         {
-            throw new NotImplementedException();
+            _carDal = carDal;
         }
 
-        public Task<Car> TGetByIdAsync(int id)
+        public async Task TDeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            await _carDal.DeleteAsync(id);
         }
 
-        public Task<List<Car>> TGetListAsync()
+        public async Task<List<Car>> TGetAllCarsWithCategoryAsync()
         {
-            throw new NotImplementedException();
+            return await _carDal.GetAllCarsWithCategoryAsync();
         }
 
-        public Task TInsertAsync(Car entity)
+        public async Task<Car> TGetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _carDal.GetByIdAsync(id);
         }
 
-        public Task TUpdateAsync(Car entity)
+        public async Task<List<Car>> TGetListAsync()
         {
-            throw new NotImplementedException();
+            return await _carDal.GetListAsync();
+        }
+
+        public async Task TInsertAsync(Car entity)
+        {
+            await _carDal.InsertAsync(entity);
+        }
+
+        public async Task TUpdateAsync(Car entity)
+        {
+            await _carDal.UpdateAsync(entity);
         }
     }
 }

@@ -7,5 +7,6 @@ namespace Rentaly.DataAccessLayer.Abstract
 {
     public interface ICarDal : IGerenicDal<Car>
     {
+        Task<List<Car>> GetAllCarsWithCategoryAsync();
     }
 }

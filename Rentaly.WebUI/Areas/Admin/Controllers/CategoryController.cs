@@ -16,7 +16,7 @@ namespace Rentaly.WebUI.Areas.Admin.Controllers
 
         public async Task<IActionResult> CategoryList()
         {
-            var values= await _categoryService.TGetListAsync();
+            var values = await _categoryService.TGetListAsync();
             return View(values);
         }
         [HttpGet]
@@ -49,4 +49,5 @@ namespace Rentaly.WebUI.Areas.Admin.Controllers
 
 
         }
+    }
 }
