@@ -14,9 +14,9 @@ namespace Rentaly.EntityLayer.Entities
         public int ModelId { get; set; }
         public CarModel Model { get; set; } = null!;
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public Category Category { get; set; } = null!;
         public int BranchId { get; set; }
-        public Branch Branch { get; set; }
+        public Branch Branch { get; set; } = null!;
         public int Year { get; set; }
         public int Kilometer { get; set; }
         public decimal DailyPrice { get; set; }
