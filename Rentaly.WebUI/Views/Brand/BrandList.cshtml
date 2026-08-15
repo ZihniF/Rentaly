@@ -5,33 +5,42 @@
 }
 
 <style>
-    .brand-grid { display:grid; gap:18px; }
-    .brand-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow-sm); overflow:hidden; scroll-margin-top:90px; }
-    .brand-card-header { display:flex; align-items:center; gap:14px; padding:18px 20px; background:#fafbfc; border-bottom:1px solid var(--border); }
-    .brand-logo { width:50px; height:50px; border-radius:12px; background:#fff; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden; flex:none; }
-    .brand-logo img { width:100%; height:100%; object-fit:contain; padding:6px; }
-    .brand-logo i { color:var(--primary); font-size:20px; }
-    .brand-title { flex:1; min-width:0; }
-    .brand-title h2 { font:800 17px/1.2 'Plus Jakarta Sans',sans-serif; margin:0; color:var(--text-main); }
-    .brand-title span { color:var(--text-muted); font-size:12px; }
-    .brand-actions { display:flex; gap:8px; align-items:center; }
-    .model-list { padding:0 20px; }
-    .model-row { display:grid; grid-template-columns:minmax(180px,1fr) 110px auto; gap:12px; align-items:center; padding:12px 0; border-bottom:1px solid var(--border); }
+    .brand-table-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow-sm); overflow:hidden; }
+    .brand-table { width:100%; border-collapse:collapse; }
+    .brand-table th { padding:13px 18px; background:#f8fafc; color:var(--text-muted); font-size:11px; text-transform:uppercase; letter-spacing:.5px; border-bottom:1px solid var(--border); }
+    .brand-main-row { border-bottom:1px solid var(--border); transition:var(--transition); }
+    .brand-main-row:hover { background:#f8fbff; }
+    .brand-main-row td { padding:14px 18px; vertical-align:middle; }
+    .brand-toggle { width:100%; display:flex; align-items:center; gap:13px; padding:0; border:0; background:transparent; color:var(--text-main); text-align:left; }
+    .brand-toggle-icon { color:var(--text-muted); font-size:12px; transition:transform .2s ease; }
+    .brand-toggle[aria-expanded="true"] .brand-toggle-icon { transform:rotate(90deg); color:var(--primary); }
+    .brand-logo { width:44px; height:44px; border-radius:10px; background:#fff; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden; flex:none; }
+    .brand-logo img { width:100%; height:100%; object-fit:contain; padding:5px; }
+    .brand-logo i { color:var(--primary); }
+    .brand-name { font:800 14px/1.25 'Plus Jakarta Sans',sans-serif; }
+    .brand-id { color:var(--text-muted); font-size:11px; margin-top:2px; }
+    .brand-summary { font-size:13px; color:var(--text-muted); white-space:nowrap; }
+    .brand-row-actions { display:flex; justify-content:flex-end; gap:7px; }
+    .brand-model-row > td { padding:0; background:#f8fafc; }
+    .model-panel { padding:18px 24px 22px 78px; border-bottom:1px solid var(--border); }
+    .model-panel-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+    .model-panel-title { font:800 13px 'Plus Jakarta Sans',sans-serif; color:var(--text-main); }
+    .model-list { background:#fff; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+    .model-row { display:grid; grid-template-columns:minmax(220px,1fr) 110px auto; gap:12px; align-items:center; padding:11px 13px; border-bottom:1px solid var(--border); }
     .model-row:last-child { border-bottom:0; }
-    .model-edit-form { display:flex; gap:8px; align-items:center; }
+    .model-edit-form { display:flex; align-items:center; gap:8px; }
     .model-edit-form input { min-width:0; }
     .model-count { color:var(--text-muted); font-size:12px; white-space:nowrap; }
-    .model-actions { display:flex; gap:7px; justify-content:flex-end; }
-    .model-add { padding:16px 20px; border-top:1px solid var(--border); background:#fbfdff; }
-    .model-add form { display:grid; grid-template-columns:minmax(180px,1fr) auto; gap:10px; }
-    .empty-models { padding:18px 20px; color:var(--text-muted); font-size:13px; }
-    @@media(max-width:760px){.brand-card-header{align-items:flex-start;flex-wrap:wrap}.brand-actions{width:100%}.model-row{grid-template-columns:1fr}.model-actions{justify-content:flex-start}.model-add form{grid-template-columns:1fr}.model-edit-form{align-items:stretch}.model-edit-form input{width:100%}}
+    .model-delete { display:flex; justify-content:flex-end; }
+    .model-add { margin-top:12px; display:grid; grid-template-columns:minmax(220px,1fr) auto; gap:9px; }
+    .empty-models { padding:16px; color:var(--text-muted); font-size:13px; text-align:center; }
+    @@media(max-width:760px){.brand-table th:nth-child(2),.brand-main-row>td:nth-child(2){display:none}.brand-main-row td{padding:12px}.brand-main-row>td:last-child{width:100px}.model-panel{padding:15px}.model-row{grid-template-columns:1fr}.model-count{padding-left:2px}.model-delete{justify-content:flex-start}.model-add{grid-template-columns:1fr}.brand-summary{font-size:11px}.brand-row-actions .btn span{display:none}}
 </style>
 
 <div class="page-header d-flex justify-content-between align-items-start gap-3">
     <div>
-        <h1 class="page-title">Marka ve Model Yönetimi</h1>
-        <p class="page-subtitle">Her markanın modellerini aynı kart içerisinde ekleyin, düzenleyin veya silin.</p>
+        <h1 class="page-title">Marka Yönetimi</h1>
+        <p class="page-subtitle">Bir markaya tıklayarak bağlı modelleri açın ve yönetin.</p>
     </div>
     <a asp-action="CreateBrand" class="btn btn-primary"><i class="fa-solid fa-plus me-2"></i>Yeni Marka</a>
 </div>
@@ -39,78 +48,113 @@
 @if (TempData["Success"] is not null) { <div class="alert alert-success">@TempData["Success"]</div> }
 @if (TempData["Error"] is not null) { <div class="alert alert-danger">@TempData["Error"]</div> }
 
-<div class="brand-grid">
-    @foreach (var brand in Model)
-    {
-        <section class="brand-card" id="brand-@brand.BrandId">
-            <header class="brand-card-header">
-                <div class="brand-logo">
-                    @if (!string.IsNullOrWhiteSpace(brand.ImageUrl))
-                    {
-                        <img src="@brand.ImageUrl" alt="@brand.BrandName" />
-                    }
-                    else
-                    {
-                        <i class="fa-solid fa-trademark"></i>
-                    }
-                </div>
-                <div class="brand-title">
-                    <h2>@brand.BrandName</h2>
-                    <span>@brand.Models.Count model · @brand.Models.Sum(x => x.VehicleCount) araç</span>
-                </div>
-                <div class="brand-actions">
-                    <a asp-action="Edit" asp-route-id="@brand.BrandId" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen me-1"></i>Markayı Düzenle</a>
-                    <form asp-action="Delete" asp-route-id="@brand.BrandId" method="post">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('@brand.BrandName markasını silmek istediğinize emin misiniz?')"><i class="fa-solid fa-trash"></i></button>
-                    </form>
-                </div>
-            </header>
-
-            @if (brand.Models.Count == 0)
+<div class="brand-table-card">
+    <table class="brand-table">
+        <thead>
+            <tr><th>Marka</th><th>Modeller / Araçlar</th><th class="text-end">İşlemler</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var brand in Model)
             {
-                <div class="empty-models"><i class="fa-regular fa-folder-open me-2"></i>Bu markaya henüz model eklenmemiş.</div>
-            }
-            else
-            {
-                <div class="model-list">
-                    @foreach (var carModel in brand.Models)
-                    {
-                        <div class="model-row">
-                            <form asp-action="EditModel" method="post" class="model-edit-form">
+                <tr class="brand-main-row" id="brand-@brand.BrandId">
+                    <td>
+                        <button type="button" class="brand-toggle" data-bs-toggle="collapse" data-bs-target="#brand-models-@brand.BrandId" aria-expanded="false" aria-controls="brand-models-@brand.BrandId">
+                            <i class="fa-solid fa-chevron-right brand-toggle-icon"></i>
+                            <span class="brand-logo">
+                                @if (!string.IsNullOrWhiteSpace(brand.ImageUrl))
+                                {
+                                    <img src="@brand.ImageUrl" alt="@brand.BrandName" />
+                                }
+                                else
+                                {
+                                    <i class="fa-solid fa-trademark"></i>
+                                }
+                            </span>
+                            <span><span class="brand-name d-block">@brand.BrandName</span><span class="brand-id d-block">Marka #@brand.BrandId</span></span>
+                        </button>
+                    </td>
+                    <td><span class="brand-summary">@brand.Models.Count model · @brand.Models.Sum(x => x.VehicleCount) araç</span></td>
+                    <td>
+                        <div class="brand-row-actions">
+                            <a asp-action="Edit" asp-route-id="@brand.BrandId" class="btn btn-sm btn-outline-primary" title="Markayı düzenle"><i class="fa-solid fa-pen me-1"></i><span>Düzenle</span></a>
+                            <form asp-action="Delete" asp-route-id="@brand.BrandId" method="post">
                                 @Html.AntiForgeryToken()
-                                <input type="hidden" name="CarModelId" value="@carModel.CarModelId" />
-                                <input type="hidden" name="BrandId" value="@brand.BrandId" />
-                                <input type="text" name="ModelName" value="@carModel.ModelName" maxlength="100" required class="form-control form-control-sm" aria-label="Model adı" />
-                                <button type="submit" class="btn btn-sm btn-outline-primary" title="Modeli kaydet"><i class="fa-solid fa-floppy-disk"></i></button>
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Markayı sil" onclick="return confirm('@brand.BrandName markasını silmek istediğinize emin misiniz?')"><i class="fa-solid fa-trash"></i></button>
                             </form>
-                            <div class="model-count"><i class="fa-solid fa-car-side me-1"></i>@carModel.VehicleCount araç</div>
-                            <div class="model-actions">
-                                <form asp-action="DeleteModel" method="post">
+                        </div>
+                    </td>
+                </tr>
+                <tr class="brand-model-row">
+                    <td colspan="3">
+                        <div class="collapse" id="brand-models-@brand.BrandId">
+                            <div class="model-panel">
+                                <div class="model-panel-head">
+                                    <div class="model-panel-title"><i class="fa-solid fa-cubes me-2 text-primary"></i>@brand.BrandName Modelleri</div>
+                                    <span class="badge bg-primary-subtle text-primary">@brand.Models.Count model</span>
+                                </div>
+
+                                <div class="model-list">
+                                    @if (brand.Models.Count == 0)
+                                    {
+                                        <div class="empty-models"><i class="fa-regular fa-folder-open me-2"></i>Bu markaya henüz model eklenmemiş.</div>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var carModel in brand.Models)
+                                        {
+                                            <div class="model-row">
+                                                <form asp-action="EditModel" method="post" class="model-edit-form">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="CarModelId" value="@carModel.CarModelId" />
+                                                    <input type="hidden" name="BrandId" value="@brand.BrandId" />
+                                                    <input type="text" name="ModelName" value="@carModel.ModelName" maxlength="100" required class="form-control form-control-sm" aria-label="Model adı" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-primary" title="Model değişikliğini kaydet"><i class="fa-solid fa-floppy-disk"></i></button>
+                                                </form>
+                                                <div class="model-count"><i class="fa-solid fa-car-side me-1"></i>@carModel.VehicleCount araç</div>
+                                                <div class="model-delete">
+                                                    <form asp-action="DeleteModel" method="post">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="id" value="@carModel.CarModelId" />
+                                                        <input type="hidden" name="brandId" value="@brand.BrandId" />
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Modeli sil" onclick="return confirm('@brand.BrandName @carModel.ModelName modelini silmek istediğinize emin misiniz?')"><i class="fa-solid fa-trash"></i></button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+
+                                <form asp-action="CreateModel" method="post" class="model-add">
                                     @Html.AntiForgeryToken()
-                                    <input type="hidden" name="id" value="@carModel.CarModelId" />
-                                    <input type="hidden" name="brandId" value="@brand.BrandId" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Modeli sil" onclick="return confirm('@brand.BrandName @carModel.ModelName modelini silmek istediğinize emin misiniz?')"><i class="fa-solid fa-trash"></i></button>
+                                    <input type="hidden" name="BrandId" value="@brand.BrandId" />
+                                    <input type="text" name="ModelName" maxlength="100" required class="form-control" placeholder="@brand.BrandName için yeni model adı" aria-label="Yeni model adı" />
+                                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i>Model Ekle</button>
                                 </form>
                             </div>
                         </div>
-                    }
-                </div>
+                    </td>
+                </tr>
             }
+        </tbody>
+    </table>
 
-            <div class="model-add">
-                <form asp-action="CreateModel" method="post">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="BrandId" value="@brand.BrandId" />
-                    <input type="text" name="ModelName" maxlength="100" required class="form-control" placeholder="@brand.BrandName için yeni model adı" aria-label="Yeni model adı" />
-                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i>Model Ekle</button>
-                </form>
-            </div>
-        </section>
+    @if (Model.Count == 0)
+    {
+        <div class="p-5 text-center text-muted">Henüz marka kaydı bulunmuyor.</div>
     }
 </div>
 
-@if (Model.Count == 0)
-{
-    <div class="table-card p-5 text-center text-muted">Henüz marka kaydı bulunmuyor.</div>
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const brandMatch = window.location.hash.match(/^#brand-(\d+)$/);
+            if (!brandMatch) return;
+
+            const brandId = brandMatch[1];
+            const panel = document.getElementById(`brand-models-${brandId}`);
+            const row = document.getElementById(`brand-${brandId}`);
+            if (panel) bootstrap.Collapse.getOrCreateInstance(panel, { toggle: false }).show();
+            if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    </script>
 }

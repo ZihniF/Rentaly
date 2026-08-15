@@ -25,6 +25,7 @@ namespace Rentaly.DataAccessLayer.EntityFramework
         public Task<List<Brand>> GetAllWithModelsAsync() =>
             _context.Brands
                 .AsNoTracking()
+                .AsSplitQuery()
                 .Include(x => x.CarModels.OrderBy(model => model.ModelName))
                     .ThenInclude(model => model.Cars)
                 .OrderBy(x => x.BrandName)
