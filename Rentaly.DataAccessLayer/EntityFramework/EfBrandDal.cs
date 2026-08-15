@@ -21,5 +21,13 @@ namespace Rentaly.DataAccessLayer.EntityFramework
                 .Where(x => x.Cars.Any(car => car.IsActive && car.IsAvailable))
                 .OrderBy(x => x.BrandName)
                 .ToListAsync();
+
+        public Task<List<Brand>> GetAllWithModelsAsync() =>
+            _context.Brands
+                .AsNoTracking()
+                .Include(x => x.CarModels.OrderBy(model => model.ModelName))
+                    .ThenInclude(model => model.Cars)
+                .OrderBy(x => x.BrandName)
+                .ToListAsync();
     }
 }

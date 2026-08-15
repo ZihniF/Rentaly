@@ -25,7 +25,7 @@ namespace Rentaly.BusinessLayer.ValidationRules
                 .WithMessage("Teslim şubesi seçilmelidir.");
 
             RuleFor(x => x.PickupDate)
-                .GreaterThanOrEqualTo(DateTime.Today)
+                .Must(date => date >= DateTime.Now.AddMinutes(-1))
                 .WithMessage(
                     "Teslim alma tarihi geçmiş bir tarih olamaz.");
 

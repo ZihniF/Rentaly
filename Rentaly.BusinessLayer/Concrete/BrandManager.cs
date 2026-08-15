@@ -38,24 +38,30 @@ namespace Rentaly.BusinessLayer.Concrete
             return _brandDal.GetWithActiveCarsAsync();
         }
 
+        public Task<List<Brand>> TGetAllWithModelsAsync()
+        {
+            return _brandDal.GetAllWithModelsAsync();
+        }
+
 
         public async Task TInsertAsync(Brand entity)
         {
-            var validator= new BrandValidator();
-            var result= validator.Validate(entity);
-            if (!result.IsValid)
-            {
-                var errors=string.Join(", ", result.Errors.Select(e => e.ErrorMessage));
-                throw new ValidationException(errors);
-            }
-
+            Validate(entity);
             await _brandDal.InsertAsync(entity);
         }
 
 
         public async Task TUpdateAsync(Brand entity)
         {
+            Validate(entity);
             await _brandDal.UpdateAsync(entity);
+        }
+
+        private static void Validate(Brand entity)
+        {
+            var result = new BrandValidator().Validate(entity);
+            if (!result.IsValid)
+                throw new ValidationException(string.Join(", ", result.Errors.Select(e => e.ErrorMessage)));
         }
     }
 }

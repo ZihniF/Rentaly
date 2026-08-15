@@ -42,6 +42,9 @@ namespace Rentaly.DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.HasKey("BranchId");
 
                     b.ToTable("Branches");

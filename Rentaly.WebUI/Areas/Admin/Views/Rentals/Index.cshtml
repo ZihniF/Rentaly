@@ -5,11 +5,12 @@
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
 
-<div class="page-header">
+<div class="page-header d-flex justify-content-between align-items-center">
     <div>
         <h1 class="page-title">Rezervasyon Yönetimi</h1>
         <p class="page-subtitle">Bekleyen talepleri onaylayın veya reddedin.</p>
     </div>
+    <a asp-action="Create" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Yeni rezervasyon</a>
 </div>
 
 @if (TempData["Success"] is not null) { <div class="alert alert-success">@TempData["Success"]</div> }
@@ -36,6 +37,7 @@
                             <div class="d-flex gap-2 flex-wrap">
                                 @if (rental.Status == RentalStatus.Pending)
                                 {
+                                    <a asp-action="Edit" asp-route-id="@rental.RentalId" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen"></i> Düzenle</a>
                                     <form asp-action="UpdateStatus" method="post">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@rental.RentalId">
@@ -47,6 +49,14 @@
                                         <input type="hidden" name="id" value="@rental.RentalId">
                                         <input type="hidden" name="status" value="@RentalStatus.Rejected">
                                         <button type="submit" class="btn btn-sm btn-outline-danger">Reddet</button>
+                                    </form>
+                                }
+                                @if (rental.Status == RentalStatus.Approved)
+                                {
+                                    <form asp-action="ResendApprovalEmail" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@rental.RentalId">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-envelope"></i> Maili yeniden gönder</button>
                                     </form>
                                 }
                                 <form asp-action="Delete" asp-route-id="@rental.RentalId" method="post">

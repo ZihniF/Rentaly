@@ -49,8 +49,24 @@
                 <span asp-validation-for="ImageUrl" class="text-danger"></span>
             </div>
             <div class="col-md-5">
-                <label asp-for="Icon" class="form-label">İkon adı</label>
-                <input asp-for="Icon" class="form-control" placeholder="car, calendar, award..." />
+                <div id="statisticMetricField">
+                    <label class="form-label" for="StatisticMetric">Canlı istatistik kaynağı</label>
+                    <select name="Icon" id="StatisticMetric" class="form-select">
+                        <option value="completed-rentals" selected="@(Model.Icon == "completed-rentals")">Tamamlanan rezervasyonlar</option>
+                        <option value="customers" selected="@(Model.Icon == "customers")">Kayıtlı müşteriler</option>
+                        <option value="active-cars" selected="@(Model.Icon == "active-cars")">Aktif araçlar</option>
+                        <option value="available-cars" selected="@(Model.Icon == "available-cars")">Müsait araçlar</option>
+                        <option value="total-rentals" selected="@(Model.Icon == "total-rentals")">Toplam rezervasyonlar</option>
+                        <option value="pending-rentals" selected="@(Model.Icon == "pending-rentals")">Bekleyen rezervasyonlar</option>
+                        <option value="testimonials" selected="@(Model.Icon == "testimonials")">Yayındaki müşteri yorumları</option>
+                        <option value="branches" selected="@(Model.Icon == "branches")">Şubeler</option>
+                    </select>
+                    <div class="form-text">Kartın değeri veritabanından otomatik hesaplanır.</div>
+                </div>
+                <div id="generalIconField">
+                    <label asp-for="Icon" class="form-label">İkon adı</label>
+                    <input asp-for="Icon" id="GeneralIcon" class="form-control" placeholder="car, calendar, award..." />
+                </div>
                 <span asp-validation-for="Icon" class="text-danger"></span>
             </div>
             <div class="col-12">
@@ -70,4 +86,24 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const section = document.getElementById('Section');
+            const statisticField = document.getElementById('statisticMetricField');
+            const generalField = document.getElementById('generalIconField');
+            const statisticInput = document.getElementById('StatisticMetric');
+            const generalInput = document.getElementById('GeneralIcon');
+
+            const syncMetricField = () => {
+                const isStatistic = section.value === '3' || section.value === 'Statistic';
+                statisticField.hidden = !isStatistic;
+                generalField.hidden = isStatistic;
+                statisticInput.disabled = !isStatistic;
+                generalInput.disabled = isStatistic;
+            };
+
+            section.addEventListener('change', syncMetricField);
+            syncMetricField();
+        });
+    </script>
 }

@@ -52,10 +52,6 @@
                         <span class="nav-icon"><i class="fa-solid fa-trademark"></i></span>
                         <span class="link-text">Marka Yönetimi</span>
                     </a>
-                    <a asp-area="Admin" asp-controller="CarModels" asp-action="Index" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-cube"></i></span>
-                        <span class="link-text">Model Yönetimi</span>
-                    </a>
                     <a asp-area="Admin" asp-controller="Category" asp-action="CategoryList" class="nav-link">
                         <span class="nav-icon"><i class="fa-solid fa-tags"></i></span>
                         <span class="link-text">Kategori Yönetimi</span>
@@ -122,18 +118,7 @@
                 </ol>
             </div>
             <div class="navbar-actions ms-auto">
-                <div class="dropdown notif-dropdown">
-                    <button class="action-btn" data-bs-toggle="dropdown">
-                        <i class="fa-regular fa-bell"></i><span class="badge-dot"></span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <div class="notif-header"><h6>Bildirimler</h6><a asp-area="Admin" asp-controller="Rentals" asp-action="Index">Tümünü Gör</a></div>
-                        <div class="notif-list">
-                            <div class="notif-item"><div class="notif-icon" style="background:#e8efff;color:#1a56db;"><i class="fa-solid fa-calendar-check"></i></div><div class="notif-text"><p>Yeni rezervasyon talebi alındı</p><small>2 dakika önce</small></div></div>
-                            <div class="notif-item"><div class="notif-icon" style="background:#f0fdf4;color:#10b981;"><i class="fa-solid fa-car"></i></div><div class="notif-text"><p>Filonuzu ve içerikleri tek panelden yönetin</p></div></div>
-                        </div>
-                    </ul>
-                </div>
+                @await Component.InvokeAsync("AdminNotification")
                 <button class="action-btn"><i class="fa-regular fa-envelope"></i></button>
                 <div class="navbar-divider d-none d-sm-block"></div>
                 <div class="dropdown admin-dropdown">

@@ -1,4 +1,4 @@
-@model Rentaly.WebUI.Models.HomeViewModel
+@model Rentaly.DtoLayer.PageDtos.HomePageDto
 @{
     ViewData["Title"] = "Araç Kiralama";
 }
@@ -36,6 +36,8 @@
     <div asp-validation-summary="All" class="validation"></div>
 </section>
 
+@if (!Model.AvailabilitySearchApplied)
+{
 <section class="section container" id="process">
     <div class="section-head"><span>Process / İşleyiş</span><h2>Üç adımda yola çıkın</h2></div>
     @if (Model.Processes.Count > 0)
@@ -56,13 +58,14 @@
         <div class="empty-public">İşleyiş bilgileri yakında yayınlanacak.</div>
     }
 </section>
+}
 
 <section class="section cars-section" id="cars">
     <div class="container">
         <div class="section-head split">
             <div>
                 <span>@(Model.AvailabilitySearchApplied ? "Seçtiğiniz tarihlerde müsait" : "Filomuz")</span>
-                <h2>İlk 10 araç</h2>
+                <h2>@(Model.AvailabilitySearchApplied ? "Müsait araçlar" : "Araçlar")</h2>
             </div>
             <a asp-controller="Fleet" asp-action="Index">Tüm araçları gör →</a>
         </div>
@@ -71,11 +74,11 @@
             {
                 <article class="car-card">
                     <div class="car-image">
-                        <img src="@(string.IsNullOrWhiteSpace(car.ImageUrl) ? "/rentaly/images/cars-alt/bmw-m5.png" : car.ImageUrl)" alt="@car.Brand?.BrandName @car.Model?.ModelName" />
+                        <img src="@(string.IsNullOrWhiteSpace(car.ImageUrl) ? "/rentaly/images/cars-alt/bmw-m5.png" : car.ImageUrl)" alt="@car.BrandName @car.ModelName" />
                     </div>
                     <div class="car-body">
-                        <small>@car.Category?.CategoryName · @car.Year · @car.Branch?.City</small>
-                        <h3>@car.Brand?.BrandName @car.Model?.ModelName</h3>
+                        <small>@car.CategoryName · @car.Year · @car.BranchCity</small>
+                        <h3>@car.BrandName @car.ModelName</h3>
                         <div class="specs">
                             <span>@car.SeatCount kişi</span><span>@car.LuggageCount bagaj</span><span>@car.FuelType</span>
                         </div>
@@ -94,6 +97,8 @@
     </div>
 </section>
 
+@if (!Model.AvailabilitySearchApplied)
+{
 <section class="future" id="future" style="background-image:linear-gradient(rgba(8,14,18,.88),rgba(8,14,18,.88)),url('/rentaly/images/background/3.jpg')">
     <div class="container">
         @if (Model.Futures.Count > 0)
@@ -121,7 +126,10 @@
         </div>
     </div>
 </section>
+}
 
+@if (!Model.AvailabilitySearchApplied)
+{
 <section class="section container" id="brands-models">
     <div class="section-head"><span>Markalar &amp; Modeller</span><h2>Filomuzu keşfedin</h2></div>
     @if (Model.Brands.Count > 0)
@@ -148,12 +156,15 @@
         @foreach (var carModel in Model.Models)
         {
             <a asp-controller="Fleet" asp-action="Index" asp-route-Filter.ModelId="@carModel.CarModelId">
-                <small>@carModel.Brand?.BrandName</small> @carModel.ModelName
+                <small>@carModel.BrandName</small> @carModel.ModelName
             </a>
         }
     </div>
 </section>
+}
 
+@if (!Model.AvailabilitySearchApplied)
+{
 <section class="section soft" id="awards">
     <div class="container">
         <div class="section-head"><span>Başarılarımız</span><h2>Ödüller</h2></div>
@@ -172,7 +183,10 @@
         }
     </div>
 </section>
+}
 
+@if (!Model.AvailabilitySearchApplied)
+{
 <section class="section container" id="testimonials">
     <div class="section-head"><span>Testimonial</span><h2>Misafirlerimizin deneyimleri</h2></div>
     @if (Model.Testimonials.Count > 0)
@@ -198,7 +212,10 @@
         <div class="empty-public">Müşteri yorumları yakında yayınlanacak.</div>
     }
 </section>
+}
 
+@if (!Model.AvailabilitySearchApplied)
+{
 <section class="section faq-section" id="faq">
     <div class="container faq-layout">
         <div class="section-head"><span>Yardım</span><h2>Sık Sorulan Sorular</h2><p>Rezervasyon öncesi merak ettikleriniz.</p></div>
@@ -225,3 +242,4 @@
         }
     </div>
 </section>
+}

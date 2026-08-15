@@ -8,15 +8,82 @@ namespace Rentaly.WebUI.Areas.Admin.Controllers;
 [Area("Admin")]
 public class CarModelsController : Controller
 {
-    private readonly ICarModelService _models; private readonly IBrandService _brands;
-    public CarModelsController(ICarModelService models, IBrandService brands) => (_models, _brands) = (models, brands);
-    public async Task<IActionResult> Index() => View(await _models.TGetAllWithBrandAsync());
-    [HttpGet] public async Task<IActionResult> Create() { await Brands(); return View("Form", new CarModel()); }
-    [HttpPost, ValidateAntiForgeryToken] public async Task<IActionResult> Create(CarModel model)
-    { if (!ModelState.IsValid) { await Brands(); return View("Form", model); } await _models.TInsertAsync(model); return RedirectToAction(nameof(Index)); }
-    [HttpGet] public async Task<IActionResult> Edit(int id) { var model=await _models.TGetByIdAsync(id); await Brands(model.BrandId); return View("Form", model); }
-    [HttpPost, ValidateAntiForgeryToken] public async Task<IActionResult> Edit(CarModel model)
-    { if (!ModelState.IsValid) { await Brands(model.BrandId); return View("Form", model); } await _models.TUpdateAsync(model); return RedirectToAction(nameof(Index)); }
-    [HttpPost, ValidateAntiForgeryToken] public async Task<IActionResult> Delete(int id) { await _models.TDeleteAsync(id); return RedirectToAction(nameof(Index)); }
-    private async Task Brands(int? selected=null) => ViewBag.Brands = new SelectList(await _brands.TGetListAsync(), "BrandId", "BrandName", selected);
+    private readonly ICarModelService _models;
+    private readonly IBrandService _brands;
+
+    public CarModelsController(ICarModelService models, IBrandService brands) =>
+        (_models, _brands) = (models, brands);
+
+    public IActionResult Index() => RedirectToAction("BrandList", "Brand", new { area = "" });
+
+    [HttpGet]
+    public async Task<IActionResult> Create()
+    {
+        await FillBrandsAsync();
+        return View("Form", new CarModel());
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(CarModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            await FillBrandsAsync();
+            return View("Form", model);
+        }
+
+        await _models.TInsertAsync(model);
+        TempData["Success"] = "Model eklendi.";
+        return RedirectToBrandList();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        try
+        {
+            var model = await _models.TGetByIdAsync(id);
+            await FillBrandsAsync(model.BrandId);
+            return View("Form", model);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(CarModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            await FillBrandsAsync(model.BrandId);
+            return View("Form", model);
+        }
+
+        await _models.TUpdateAsync(model);
+        TempData["Success"] = "Model güncellendi.";
+        return RedirectToBrandList();
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id)
+    {
+        try
+        {
+            await _models.TDeleteAsync(id);
+            TempData["Success"] = "Model silindi.";
+        }
+        catch
+        {
+            TempData["Error"] = "Modele bağlı araç bulunduğu için model silinemedi.";
+        }
+        return RedirectToBrandList();
+    }
+
+    private async Task FillBrandsAsync(int? selected = null) =>
+        ViewBag.Brands = new SelectList(await _brands.TGetListAsync(), "BrandId", "BrandName", selected);
+
+    private RedirectToActionResult RedirectToBrandList() =>
+        RedirectToAction("BrandList", "Brand", new { area = "" });
 }

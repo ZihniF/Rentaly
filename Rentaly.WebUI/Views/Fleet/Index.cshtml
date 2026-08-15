@@ -1,7 +1,119 @@
-@model Rentaly.WebUI.Models.FleetViewModel
-@{ ViewData["Title"]="Araçlar"; }
-<section class="subhero" style="background-image:linear-gradient(rgba(5,10,15,.72),rgba(5,10,15,.72)),url('/rentaly/images/background/subheader.jpg')"><div class="container"><span>Rentaly Filosu</span><h1>Size uygun aracı bulun</h1></div></section>
-<section class="section container fleet-layout">
-<aside class="filter-card"><h2>Filtrele</h2><form method="get"><label>Marka<select asp-for="Filter.BrandId"><option value="">Tümü</option>@foreach(var x in Model.Brands){<option value="@x.BrandId">@x.BrandName</option>}</select></label><label>Marka Model<select asp-for="Filter.ModelId"><option value="">Tümü</option>@foreach(var x in Model.Models){<option value="@x.CarModelId">@x.Brand?.BrandName @x.ModelName</option>}</select></label><label>Lokasyon<select asp-for="Filter.BranchId"><option value="">Tümü</option>@foreach(var x in Model.Branches){<option value="@x.BranchId">@x.City — @x.BranchName</option>}</select></label><div class="two"><label>Min. fiyat<input asp-for="Filter.MinPrice" type="number" min="0" /></label><label>Maks. fiyat<input asp-for="Filter.MaxPrice" type="number" min="0" /></label></div><label>Alış<input asp-for="Filter.PickupDate" type="datetime-local" /></label><label>İade<input asp-for="Filter.ReturnDate" type="datetime-local" /></label><button>Listeyi güncelle</button><a asp-action="Index" class="clear">Filtreleri temizle</a></form></aside>
-<div><div class="fleet-result"><strong>@Model.Cars.Count araç</strong><span>kriterlerinizle eşleşiyor</span></div><div class="car-grid fleet-grid">@foreach(var car in Model.Cars){<article class="car-card"><div class="car-image"><img src="@(string.IsNullOrWhiteSpace(car.ImageUrl)?"/rentaly/images/cars-alt/toyota-rav.png":car.ImageUrl)" alt="@car.Brand?.BrandName @car.Model?.ModelName" /></div><div class="car-body"><small>@car.Branch?.City · @car.Category?.CategoryName</small><h3>@car.Brand?.BrandName @car.Model?.ModelName</h3><div class="specs"><span>@car.SeatCount kişi</span><span>@car.FuelType</span><span>@car.Year</span></div><div class="price"><strong>@car.DailyPrice.ToString("N0") ₺</strong><span>/ gün</span><a asp-controller="Booking" asp-action="Index" asp-route-carId="@car.CarId" asp-route-pickupDate="@Model.Filter.PickupDate" asp-route-returnDate="@Model.Filter.ReturnDate" asp-route-branchId="@Model.Filter.BranchId">Rezervasyon</a></div></div></article>}</div>@if(!Model.Cars.Any()){<div class="empty-public">Bu filtrelere uygun müsait araç bulunamadı.</div>}</div>
+@model Rentaly.DtoLayer.PageDtos.FleetPageDto
+@{
+    ViewData["Title"] = "Araçlar";
+    var minimumDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+}
+
+<section class="subhero" style="background-image:linear-gradient(rgba(5,10,15,.72),rgba(5,10,15,.72)),url('/rentaly/images/background/subheader.jpg')">
+    <div class="container"><span>Rentaly Filosu</span><h1>Size uygun aracı bulun</h1></div>
 </section>
+
+<section class="section container fleet-layout">
+    <aside class="filter-card">
+        <h2>Filtrele</h2>
+        <form method="get" asp-controller="Fleet" asp-action="Index">
+            <div asp-validation-summary="All" class="validation"></div>
+            <label>
+                Marka
+                <select asp-for="Filter.BrandId" id="fleetBrand">
+                    <option value="">Tümü</option>
+                    @foreach (var brand in Model.Brands)
+                    {
+                        <option value="@brand.BrandId">@brand.BrandName</option>
+                    }
+                </select>
+            </label>
+            <label>
+                Model
+                <select asp-for="Filter.ModelId" id="fleetModel">
+                    <option value="">Tümü</option>
+                    @foreach (var carModel in Model.Models)
+                    {
+                        <option value="@carModel.CarModelId" data-brand-id="@carModel.BrandId">@carModel.BrandName @carModel.ModelName</option>
+                    }
+                </select>
+            </label>
+            <label>
+                Lokasyon
+                <select asp-for="Filter.BranchId">
+                    <option value="">Tümü</option>
+                    @foreach (var branch in Model.Branches)
+                    {
+                        <option value="@branch.BranchId">@branch.City — @branch.BranchName</option>
+                    }
+                </select>
+            </label>
+            <div class="two">
+                <label>Min. fiyat<input asp-for="Filter.MinPrice" type="number" min="0" step="1" /></label>
+                <label>Maks. fiyat<input asp-for="Filter.MaxPrice" type="number" min="0" step="1" /></label>
+            </div>
+            <label>Alış<input asp-for="Filter.PickupDate" id="fleetPickup" type="datetime-local" min="@minimumDate" /></label>
+            <label>İade<input asp-for="Filter.ReturnDate" id="fleetReturn" type="datetime-local" min="@minimumDate" /></label>
+            <button type="submit">Listeyi güncelle</button>
+            <a asp-action="Index" class="clear">Filtreleri temizle</a>
+        </form>
+    </aside>
+
+    <div>
+        <div class="fleet-result"><strong>@Model.Cars.Count araç</strong><span>kriterlerinizle eşleşiyor</span></div>
+        <div class="car-grid fleet-grid">
+            @foreach (var car in Model.Cars)
+            {
+                <article class="car-card">
+                    <div class="car-image">
+                        <img src="@(string.IsNullOrWhiteSpace(car.ImageUrl) ? "/rentaly/images/cars-alt/toyota-rav.png" : car.ImageUrl)" alt="@car.BrandName @car.ModelName" />
+                    </div>
+                    <div class="car-body">
+                        <small>@car.BranchCity · @car.CategoryName</small>
+                        <h3>@car.BrandName @car.ModelName</h3>
+                        <div class="specs"><span>@car.SeatCount kişi</span><span>@car.FuelType</span><span>@car.Year</span></div>
+                        <div class="price">
+                            <strong>@car.DailyPrice.ToString("N0") ₺</strong><span>/ gün</span>
+                            <a asp-controller="Booking" asp-action="Index"
+                               asp-route-carId="@car.CarId"
+                               asp-route-pickupDate="@Model.Filter.PickupDate"
+                               asp-route-returnDate="@Model.Filter.ReturnDate"
+                               asp-route-branchId="@Model.Filter.BranchId">Rezervasyon</a>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+        @if (!Model.Cars.Any())
+        {
+            <div class="empty-public">Bu filtrelere uygun müsait araç bulunamadı.</div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const brand = document.getElementById('fleetBrand');
+            const model = document.getElementById('fleetModel');
+            const pickup = document.getElementById('fleetPickup');
+            const returnDate = document.getElementById('fleetReturn');
+
+            const filterModels = () => {
+                const brandId = brand.value;
+                [...model.options].forEach(option => {
+                    if (!option.value) return;
+                    const visible = !brandId || option.dataset.brandId === brandId;
+                    option.hidden = !visible;
+                    option.disabled = !visible;
+                });
+                if (model.selectedOptions[0]?.disabled) model.value = '';
+            };
+
+            const syncReturnMinimum = () => {
+                returnDate.min = pickup.value || '@minimumDate';
+                if (pickup.value && returnDate.value && returnDate.value <= pickup.value) returnDate.value = '';
+            };
+
+            brand.addEventListener('change', filterModels);
+            pickup.addEventListener('change', syncReturnMinimum);
+            filterModels();
+            syncReturnMinimum();
+        });
+    </script>
+}

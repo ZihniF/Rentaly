@@ -18,7 +18,7 @@ namespace Rentaly.BusinessLayer.Concrete
 
         public async Task TDeleteAsync(int id)
         {
-            await _branchDal.DeleteAsync(id);
+            await _branchDal.ArchiveAsync(id);
         }
 
         public async Task<Branch> TGetByIdAsync(int id)
@@ -28,7 +28,7 @@ namespace Rentaly.BusinessLayer.Concrete
 
         public async Task<List<Branch>> TGetListAsync()
         {
-            return await _branchDal.GetListAsync();
+            return await _branchDal.GetActiveListAsync();
         }
 
         public async Task TInsertAsync(Branch entity)

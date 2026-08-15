@@ -1,50 +1,83 @@
+@model Rentaly.DtoLayer.PageDtos.AdminDashboardDto
 @{
     ViewData["Title"] = "Yönetim Paneli";
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
 
+<style>
+    .dashboard-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; }
+    .dashboard-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow-sm); color:var(--text-main); height:100%; transition:var(--transition); }
+    .dashboard-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-md); }
+    .dashboard-card-top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .dashboard-icon { width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:19px; }
+    .dashboard-value { margin-top:18px; font:800 30px/1 'Plus Jakarta Sans',sans-serif; }
+    .dashboard-label { margin-top:6px; color:var(--text-muted); font-size:13px; font-weight:600; }
+    .dashboard-note { font-size:11px; color:var(--text-muted); }
+    .dashboard-actions { margin-top:24px; }
+    @@media(max-width:1100px){.dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+    @@media(max-width:600px){.dashboard-grid{grid-template-columns:1fr;}}
+</style>
+
 <div class="page-header">
     <div>
         <h1 class="page-title">Yönetim Paneli</h1>
-        <p class="page-subtitle">Rezervasyonları, filoyu ve ana sayfa içeriklerini yönetin.</p>
+        <p class="page-subtitle">Filo, rezervasyon ve ana sayfa verilerinin güncel özeti.</p>
     </div>
 </div>
 
-<div class="row g-4">
-    <div class="col-md-6 col-xl-3">
-        <a asp-area="Admin" asp-controller="Rentals" asp-action="Index" class="text-decoration-none">
-            <div class="table-card h-100 p-4">
-                <i class="fa-solid fa-calendar-check fa-2x text-primary mb-3"></i>
-                <h5>Rezervasyonlar</h5>
-                <p class="text-muted mb-0">Talepleri onaylayın, reddedin veya silin.</p>
-            </div>
-        </a>
-    </div>
-    <div class="col-md-6 col-xl-3">
-        <a asp-area="" asp-controller="Car" asp-action="CarList" class="text-decoration-none">
-            <div class="table-card h-100 p-4">
-                <i class="fa-solid fa-car-side fa-2x text-primary mb-3"></i>
-                <h5>Araçlar</h5>
-                <p class="text-muted mb-0">Filodaki araçları ve müsaitlik durumunu yönetin.</p>
-            </div>
-        </a>
-    </div>
-    <div class="col-md-6 col-xl-3">
-        <a asp-area="Admin" asp-controller="HomeContents" asp-action="Index" class="text-decoration-none">
-            <div class="table-card h-100 p-4">
-                <i class="fa-solid fa-layer-group fa-2x text-primary mb-3"></i>
-                <h5>Ana sayfa</h5>
-                <p class="text-muted mb-0">Dinamik içerik bölümlerini düzenleyin.</p>
-            </div>
-        </a>
-    </div>
-    <div class="col-md-6 col-xl-3">
-        <a asp-area="" asp-controller="Customer" asp-action="CustomerList" class="text-decoration-none">
-            <div class="table-card h-100 p-4">
-                <i class="fa-solid fa-users fa-2x text-primary mb-3"></i>
-                <h5>Müşteriler</h5>
-                <p class="text-muted mb-0">Müşteri kayıtlarını yönetin.</p>
-            </div>
-        </a>
-    </div>
+<div class="dashboard-grid">
+    <a asp-area="" asp-controller="Car" asp-action="CarList" class="text-decoration-none">
+        <div class="dashboard-card">
+            <div class="dashboard-card-top"><div class="dashboard-icon" style="background:#e8efff;color:#1a56db"><i class="fa-solid fa-car-side"></i></div><span class="dashboard-note">Aktif filo</span></div>
+            <div class="dashboard-value">@Model.ActiveCarCount</div><div class="dashboard-label">Toplam Araç</div>
+        </div>
+    </a>
+    <a asp-area="" asp-controller="Car" asp-action="CarList" class="text-decoration-none">
+        <div class="dashboard-card">
+            <div class="dashboard-card-top"><div class="dashboard-icon" style="background:#d1fae5;color:#059669"><i class="fa-solid fa-circle-check"></i></div><span class="dashboard-note">Şu anda</span></div>
+            <div class="dashboard-value">@Model.AvailableCarCount</div><div class="dashboard-label">Müsait Araç</div>
+        </div>
+    </a>
+    <a asp-area="Admin" asp-controller="Rentals" asp-action="Index" class="text-decoration-none">
+        <div class="dashboard-card">
+            <div class="dashboard-card-top"><div class="dashboard-icon" style="background:#ede9fe;color:#7c3aed"><i class="fa-solid fa-calendar-check"></i></div><span class="dashboard-note">Tüm kayıtlar</span></div>
+            <div class="dashboard-value">@Model.TotalRentalCount</div><div class="dashboard-label">Toplam Rezervasyon</div>
+        </div>
+    </a>
+    <a asp-area="Admin" asp-controller="Rentals" asp-action="Index" class="text-decoration-none">
+        <div class="dashboard-card">
+            <div class="dashboard-card-top"><div class="dashboard-icon" style="background:#fff7ed;color:#ea580c"><i class="fa-solid fa-hourglass-half"></i></div><span class="dashboard-note">İşlem bekliyor</span></div>
+            <div class="dashboard-value">@Model.PendingRentalCount</div><div class="dashboard-label">Bekleyen Rezervasyon Talebi</div>
+        </div>
+    </a>
+    <a asp-area="" asp-controller="Customer" asp-action="CustomerList" class="text-decoration-none">
+        <div class="dashboard-card">
+            <div class="dashboard-card-top"><div class="dashboard-icon" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-users"></i></div><span class="dashboard-note">Kayıtlı</span></div>
+            <div class="dashboard-value">@Model.CustomerCount</div><div class="dashboard-label">Müşteri</div>
+        </div>
+    </a>
+    <a asp-area="Admin" asp-controller="HomeContents" asp-action="Index" asp-route-section="Testimonial" class="text-decoration-none">
+        <div class="dashboard-card">
+            <div class="dashboard-card-top"><div class="dashboard-icon" style="background:#fdf2f8;color:#db2777"><i class="fa-solid fa-comments"></i></div><span class="dashboard-note">Yayında</span></div>
+            <div class="dashboard-value">@Model.TestimonialCount</div><div class="dashboard-label">Müşteri Yorumu</div>
+        </div>
+    </a>
+    <a asp-area="" asp-controller="Branch" asp-action="BranchList" class="text-decoration-none">
+        <div class="dashboard-card">
+            <div class="dashboard-card-top"><div class="dashboard-icon" style="background:#ecfdf5;color:#047857"><i class="fa-solid fa-building"></i></div><span class="dashboard-note">Aktif</span></div>
+            <div class="dashboard-value">@Model.BranchCount</div><div class="dashboard-label">Şube</div>
+        </div>
+    </a>
+    <a asp-area="Admin" asp-controller="Rentals" asp-action="Index" class="text-decoration-none">
+        <div class="dashboard-card">
+            <div class="dashboard-card-top"><div class="dashboard-icon" style="background:#fee2e2;color:#dc2626"><i class="fa-solid fa-bell"></i></div><span class="dashboard-note">Okunmayı bekliyor</span></div>
+            <div class="dashboard-value">@Model.NotificationCount</div><div class="dashboard-label">Bildirim</div>
+        </div>
+    </a>
+</div>
+
+<div class="dashboard-actions row g-3">
+    <div class="col-md-4"><a asp-area="Admin" asp-controller="Rentals" asp-action="Create" class="btn btn-primary w-100"><i class="fa-solid fa-plus me-2"></i>Yeni Rezervasyon</a></div>
+    <div class="col-md-4"><a asp-area="" asp-controller="Car" asp-action="CreateCar" class="btn btn-outline-primary w-100"><i class="fa-solid fa-car-side me-2"></i>Yeni Araç</a></div>
+    <div class="col-md-4"><a asp-area="Admin" asp-controller="HomeContents" asp-action="Index" class="btn btn-outline-primary w-100"><i class="fa-solid fa-layer-group me-2"></i>Ana Sayfa İçerikleri</a></div>
 </div>

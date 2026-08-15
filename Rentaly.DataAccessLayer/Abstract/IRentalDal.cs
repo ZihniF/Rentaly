@@ -17,5 +17,7 @@ namespace Rentaly.DataAccessLayer.Abstract
         Task<bool> TryCreateRentalAsync(Rental rental);
 
         Task<bool> TryCreateBookingAsync(Customer customer, Rental rental);
+
+        Task<bool> TryUpdateRentalAsync(Rental rental);
     }
 }

@@ -12,6 +12,9 @@
     <a asp-action="Create" class="btn btn-primary">Yeni model</a>
 </div>
 
+@if (TempData["Success"] is not null) { <div class="alert alert-success">@TempData["Success"]</div> }
+@if (TempData["Error"] is not null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+
 <div class="table-card">
     <table class="table align-middle">
         <thead>

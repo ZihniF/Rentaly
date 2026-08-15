@@ -1,3 +1,116 @@
-@model List<Rentaly.EntityLayer.Entities.Brand>
-@{ ViewData["Title"]="Markalar"; Layout="~/Views/AdminLayout/Index.cshtml"; }
-<div class="page-header d-flex justify-content-between"><h1 class="page-title">Marka Yönetimi</h1><a asp-action="CreateBrand" class="btn btn-primary">Yeni marka</a></div><div class="table-card"><table class="table"><thead><tr><th>#</th><th>Marka</th><th></th></tr></thead><tbody>@foreach(var x in Model){<tr><td>@x.BrandId</td><td>@x.BrandName</td><td class="d-flex gap-2"><a asp-action="Edit" asp-route-id="@x.BrandId" class="btn btn-sm btn-outline-primary">Düzenle</a><form asp-action="Delete" asp-route-id="@x.BrandId" method="post"><button class="btn btn-sm btn-outline-danger">Sil</button></form></td></tr>}</tbody></table></div>
+@model List<Rentaly.DtoLayer.BrandDtos.BrandManagementDto>
+@{
+    ViewData["Title"] = "Marka ve Model Yönetimi";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .brand-grid { display:grid; gap:18px; }
+    .brand-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow-sm); overflow:hidden; scroll-margin-top:90px; }
+    .brand-card-header { display:flex; align-items:center; gap:14px; padding:18px 20px; background:#fafbfc; border-bottom:1px solid var(--border); }
+    .brand-logo { width:50px; height:50px; border-radius:12px; background:#fff; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden; flex:none; }
+    .brand-logo img { width:100%; height:100%; object-fit:contain; padding:6px; }
+    .brand-logo i { color:var(--primary); font-size:20px; }
+    .brand-title { flex:1; min-width:0; }
+    .brand-title h2 { font:800 17px/1.2 'Plus Jakarta Sans',sans-serif; margin:0; color:var(--text-main); }
+    .brand-title span { color:var(--text-muted); font-size:12px; }
+    .brand-actions { display:flex; gap:8px; align-items:center; }
+    .model-list { padding:0 20px; }
+    .model-row { display:grid; grid-template-columns:minmax(180px,1fr) 110px auto; gap:12px; align-items:center; padding:12px 0; border-bottom:1px solid var(--border); }
+    .model-row:last-child { border-bottom:0; }
+    .model-edit-form { display:flex; gap:8px; align-items:center; }
+    .model-edit-form input { min-width:0; }
+    .model-count { color:var(--text-muted); font-size:12px; white-space:nowrap; }
+    .model-actions { display:flex; gap:7px; justify-content:flex-end; }
+    .model-add { padding:16px 20px; border-top:1px solid var(--border); background:#fbfdff; }
+    .model-add form { display:grid; grid-template-columns:minmax(180px,1fr) auto; gap:10px; }
+    .empty-models { padding:18px 20px; color:var(--text-muted); font-size:13px; }
+    @@media(max-width:760px){.brand-card-header{align-items:flex-start;flex-wrap:wrap}.brand-actions{width:100%}.model-row{grid-template-columns:1fr}.model-actions{justify-content:flex-start}.model-add form{grid-template-columns:1fr}.model-edit-form{align-items:stretch}.model-edit-form input{width:100%}}
+</style>
+
+<div class="page-header d-flex justify-content-between align-items-start gap-3">
+    <div>
+        <h1 class="page-title">Marka ve Model Yönetimi</h1>
+        <p class="page-subtitle">Her markanın modellerini aynı kart içerisinde ekleyin, düzenleyin veya silin.</p>
+    </div>
+    <a asp-action="CreateBrand" class="btn btn-primary"><i class="fa-solid fa-plus me-2"></i>Yeni Marka</a>
+</div>
+
+@if (TempData["Success"] is not null) { <div class="alert alert-success">@TempData["Success"]</div> }
+@if (TempData["Error"] is not null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+
+<div class="brand-grid">
+    @foreach (var brand in Model)
+    {
+        <section class="brand-card" id="brand-@brand.BrandId">
+            <header class="brand-card-header">
+                <div class="brand-logo">
+                    @if (!string.IsNullOrWhiteSpace(brand.ImageUrl))
+                    {
+                        <img src="@brand.ImageUrl" alt="@brand.BrandName" />
+                    }
+                    else
+                    {
+                        <i class="fa-solid fa-trademark"></i>
+                    }
+                </div>
+                <div class="brand-title">
+                    <h2>@brand.BrandName</h2>
+                    <span>@brand.Models.Count model · @brand.Models.Sum(x => x.VehicleCount) araç</span>
+                </div>
+                <div class="brand-actions">
+                    <a asp-action="Edit" asp-route-id="@brand.BrandId" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen me-1"></i>Markayı Düzenle</a>
+                    <form asp-action="Delete" asp-route-id="@brand.BrandId" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('@brand.BrandName markasını silmek istediğinize emin misiniz?')"><i class="fa-solid fa-trash"></i></button>
+                    </form>
+                </div>
+            </header>
+
+            @if (brand.Models.Count == 0)
+            {
+                <div class="empty-models"><i class="fa-regular fa-folder-open me-2"></i>Bu markaya henüz model eklenmemiş.</div>
+            }
+            else
+            {
+                <div class="model-list">
+                    @foreach (var carModel in brand.Models)
+                    {
+                        <div class="model-row">
+                            <form asp-action="EditModel" method="post" class="model-edit-form">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="CarModelId" value="@carModel.CarModelId" />
+                                <input type="hidden" name="BrandId" value="@brand.BrandId" />
+                                <input type="text" name="ModelName" value="@carModel.ModelName" maxlength="100" required class="form-control form-control-sm" aria-label="Model adı" />
+                                <button type="submit" class="btn btn-sm btn-outline-primary" title="Modeli kaydet"><i class="fa-solid fa-floppy-disk"></i></button>
+                            </form>
+                            <div class="model-count"><i class="fa-solid fa-car-side me-1"></i>@carModel.VehicleCount araç</div>
+                            <div class="model-actions">
+                                <form asp-action="DeleteModel" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@carModel.CarModelId" />
+                                    <input type="hidden" name="brandId" value="@brand.BrandId" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Modeli sil" onclick="return confirm('@brand.BrandName @carModel.ModelName modelini silmek istediğinize emin misiniz?')"><i class="fa-solid fa-trash"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            <div class="model-add">
+                <form asp-action="CreateModel" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="BrandId" value="@brand.BrandId" />
+                    <input type="text" name="ModelName" maxlength="100" required class="form-control" placeholder="@brand.BrandName için yeni model adı" aria-label="Yeni model adı" />
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i>Model Ekle</button>
+                </form>
+            </div>
+        </section>
+    }
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="table-card p-5 text-center text-muted">Henüz marka kaydı bulunmuyor.</div>
+}

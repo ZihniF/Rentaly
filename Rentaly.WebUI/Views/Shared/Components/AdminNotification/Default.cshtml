@@ -1,0 +1,43 @@
+@model Rentaly.DtoLayer.PageDtos.AdminNotificationDto
+
+<div class="dropdown notif-dropdown">
+    <button class="action-btn" data-bs-toggle="dropdown" aria-label="Rezervasyon bildirimleri">
+        <i class="fa-regular fa-bell"></i>
+        @if (Model.PendingCount > 0)
+        {
+            <span class="badge-dot"></span>
+        }
+    </button>
+    <div class="dropdown-menu dropdown-menu-end">
+        <div class="notif-header">
+            <h6>Bildirimler</h6>
+            <a asp-area="Admin" asp-controller="Rentals" asp-action="Index">Tümünü Gör</a>
+        </div>
+        <div class="notif-list">
+            @if (Model.LatestPendingRentals.Count == 0)
+            {
+                <div class="notif-item">
+                    <div class="notif-icon" style="background:#f1f5f9;color:#64748b;"><i class="fa-regular fa-bell-slash"></i></div>
+                    <div class="notif-text"><p>Bekleyen rezervasyon talebi yok.</p></div>
+                </div>
+            }
+            else
+            {
+                @foreach (var rental in Model.LatestPendingRentals)
+                {
+                    <a asp-area="Admin" asp-controller="Rentals" asp-action="Index" class="notif-item text-decoration-none">
+                        <div class="notif-icon" style="background:#e8efff;color:#1a56db;"><i class="fa-solid fa-calendar-check"></i></div>
+                        <div class="notif-text">
+                            <p>Yeni rezervasyon talebi #@rental.RentalId</p>
+                            <small>@rental.CustomerFullName · @rental.BrandName @rental.ModelName</small>
+                        </div>
+                    </a>
+                }
+            }
+        </div>
+        @if (Model.PendingCount > 0)
+        {
+            <div class="px-3 py-2 border-top small text-muted">@Model.PendingCount bekleyen rezervasyon</div>
+        }
+    </div>
+</div>

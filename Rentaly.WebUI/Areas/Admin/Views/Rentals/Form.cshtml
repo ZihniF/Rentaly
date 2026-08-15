@@ -1,0 +1,106 @@
+@model Rentaly.DtoLayer.PageDtos.AdminRentalFormDto
+@{
+    var isEdit = Model.RentalId > 0;
+    ViewData["Title"] = isEdit ? "Rezervasyon Düzenle" : "Yeni Rezervasyon";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    var minimumDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+}
+
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="page-title">@ViewData["Title"]</h1>
+        <p class="page-subtitle">Araç, müşteri, şube ve tarih bilgilerini yönetin.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-light"><i class="fa-solid fa-arrow-left"></i> Listeye dön</a>
+</div>
+
+<div class="table-card p-4">
+    <form asp-action="@(isEdit ? "Edit" : "Create")" method="post">
+        @Html.AntiForgeryToken()
+        <input asp-for="RentalId" type="hidden" />
+        <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+        <div class="row g-3">
+            <div class="col-lg-6">
+                <label asp-for="CarId" class="form-label">Araç</label>
+                <select asp-for="CarId" id="adminRentalCar" class="form-select">
+                    <option value="">Araç seçin</option>
+                    @foreach (var car in Model.Cars)
+                    {
+                        <option value="@car.CarId" data-branch-id="@car.BranchId">
+                            @car.BrandName @car.ModelName — @car.BranchCity / @car.BranchName
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="CarId" class="text-danger"></span>
+            </div>
+            <div class="col-lg-6">
+                <label asp-for="CustomerId" class="form-label">Müşteri</label>
+                <select asp-for="CustomerId" class="form-select">
+                    <option value="">Müşteri seçin</option>
+                    @foreach (var customer in Model.Customers)
+                    {
+                        <option value="@customer.CustomerId">@customer.FullName — @customer.Email</option>
+                    }
+                </select>
+                <span asp-validation-for="CustomerId" class="text-danger"></span>
+            </div>
+            <div class="col-lg-6">
+                <label asp-for="PickupBranchId" class="form-label">Teslim alma şubesi</label>
+                <select asp-for="PickupBranchId" id="adminRentalPickupBranch" class="form-select">
+                    <option value="">Şube seçin</option>
+                    @foreach (var branch in Model.Branches)
+                    {
+                        <option value="@branch.BranchId">@branch.City — @branch.BranchName</option>
+                    }
+                </select>
+                <div class="form-text">Araç seçildiğinde bulunduğu şube otomatik atanır.</div>
+                <span asp-validation-for="PickupBranchId" class="text-danger"></span>
+            </div>
+            <div class="col-lg-6">
+                <label asp-for="ReturnBranchId" class="form-label">İade şubesi</label>
+                <select asp-for="ReturnBranchId" class="form-select">
+                    <option value="">Şube seçin</option>
+                    @foreach (var branch in Model.Branches)
+                    {
+                        <option value="@branch.BranchId">@branch.City — @branch.BranchName</option>
+                    }
+                </select>
+                <span asp-validation-for="ReturnBranchId" class="text-danger"></span>
+            </div>
+            <div class="col-lg-6">
+                <label asp-for="PickupDate" class="form-label">Alış tarihi</label>
+                <input asp-for="PickupDate" id="adminRentalPickup" type="datetime-local" min="@minimumDate" class="form-control" />
+                <span asp-validation-for="PickupDate" class="text-danger"></span>
+            </div>
+            <div class="col-lg-6">
+                <label asp-for="ReturnDate" class="form-label">İade tarihi</label>
+                <input asp-for="ReturnDate" id="adminRentalReturn" type="datetime-local" min="@minimumDate" class="form-control" />
+                <span asp-validation-for="ReturnDate" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+            <a asp-action="Index" class="btn btn-light">Vazgeç</a>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> @(isEdit ? "Güncelle" : "Kaydet")</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const car = document.getElementById('adminRentalCar');
+        const pickupBranch = document.getElementById('adminRentalPickupBranch');
+        const pickupDate = document.getElementById('adminRentalPickup');
+        const returnDate = document.getElementById('adminRentalReturn');
+
+        car.addEventListener('change', () => {
+            const branchId = car.selectedOptions[0]?.dataset.branchId;
+            if (branchId) pickupBranch.value = branchId;
+        });
+        pickupDate.addEventListener('change', () => {
+            returnDate.min = pickupDate.value || '@minimumDate';
+            if (returnDate.value && returnDate.value <= pickupDate.value) returnDate.value = '';
+        });
+    });
+</script>

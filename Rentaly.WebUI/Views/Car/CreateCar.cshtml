@@ -1,8 +1,9 @@
-﻿@model Rentaly.EntityLayer.Entities.Car
+﻿@model Rentaly.DtoLayer.CarDtos.AdminCarFormDto
 
 @{
     ViewData["Title"] = Model?.CarId > 0 ? "Araç Düzenle" : "Yeni Araç Ekle";
     Layout = "~/Views/AdminLayout/Index.cshtml";
+    var carModels = ViewBag.CarModels as List<Rentaly.EntityLayer.Entities.CarModel> ?? [];
     // Controller'dan ViewBag.Categories = new SelectList(categories, "CategoryId", "CategoryName")
 }
 
@@ -661,9 +662,10 @@
 <div class="row g-4">
     <!-- ═══ Form ═══ -->
     <div class="col-12 col-lg-8">
-        <form asp-action="@(Model?.CarId > 0 ? "Edit" : "CreateCar")" asp-controller="Car" method="post" id="carCreateForm">
+        <form asp-action="@(Model?.CarId > 0 ? "Edit" : "CreateCar")" asp-controller="Car" method="post" id="carCreateForm" novalidate>
             @Html.AntiForgeryToken()
             <input asp-for="CarId" type="hidden" />
+            <div asp-validation-summary="All" class="alert alert-danger mb-3" role="alert"></div>
 
             <!-- ══════════════════════
                  BÖLÜM 1 — Temel Bilgiler
@@ -758,7 +760,7 @@
                             <select asp-for="BrandId"
                                     asp-items="ViewBag.Brands"
                                     class="form-control-custom"
-                                    onchange="updatePreview()">
+                                    onchange="filterCarModels(true); updatePreview()">
                                 <option value="">— Marka Seçin —</option>
                             </select>
                             <span asp-validation-for="BrandId" class="field-error">
@@ -773,10 +775,13 @@
                                 Model <span class="req">*</span>
                             </label>
                             <select asp-for="ModelId"
-                                    asp-items="ViewBag.Models"
                                     class="form-control-custom"
                                     onchange="updatePreview()">
                                 <option value="">— Model Seçin —</option>
+                                @foreach (var carModel in carModels)
+                                {
+                                    <option value="@carModel.CarModelId" data-brand-id="@carModel.BrandId">@carModel.Brand?.BrandName @carModel.ModelName</option>
+                                }
                             </select>
                             <span asp-validation-for="ModelId" class="field-error">
                                 <i class="fa-solid fa-circle-exclamation"></i>
@@ -1015,7 +1020,7 @@
                                 </div>
                             </div>
                             <label class="custom-switch">
-                                <input asp-for="IsActive" type="checkbox" checked />
+                                <input asp-for="IsActive" type="checkbox" />
                                 <span class="slider"></span>
                             </label>
                         </label>
@@ -1042,7 +1047,7 @@
                         Devam Et <i class="fa-solid fa-chevron-right"></i>
                     </button>
                     <button type="submit" class="btn-submit-final" id="btnSubmit" style="display:none;">
-                        <i class="fa-solid fa-check"></i> Aracı Kaydet
+                        <i class="fa-solid fa-check"></i> @(Model?.CarId > 0 ? "Değişiklikleri Kaydet" : "Aracı Kaydet")
                     </button>
                 </div>
             </div>
@@ -1120,6 +1125,20 @@
     function nextStep() { goStep(currentStep + 1); }
     function prevStep() { goStep(currentStep - 1); }
 
+    function filterCarModels(resetInvalid) {
+        const brandId = document.getElementById('BrandId')?.value || '';
+        const modelSelect = document.getElementById('ModelId');
+        if (!modelSelect) return;
+
+        [...modelSelect.options].forEach(option => {
+            if (!option.value) return;
+            const visible = !brandId || option.dataset.brandId === brandId;
+            option.hidden = !visible;
+            option.disabled = !visible;
+        });
+        if (resetInvalid && modelSelect.selectedOptions[0]?.disabled) modelSelect.value = '';
+    }
+
     // ── Canlı Önizleme ──
     function updatePreview() {
         const plate = document.getElementById('PlateNumber')?.value || '— — —';
@@ -1175,6 +1194,7 @@
 
     // ── İlk yükleme ──
     document.addEventListener('DOMContentLoaded', () => {
+        filterCarModels(false);
         goStep(1);
         updatePreview();
     });

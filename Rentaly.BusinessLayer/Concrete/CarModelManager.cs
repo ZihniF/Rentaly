@@ -4,6 +4,7 @@ using Rentaly.DataAccessLayer.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace Rentaly.BusinessLayer.Concrete
 {
@@ -36,14 +37,28 @@ namespace Rentaly.BusinessLayer.Concrete
             return _dal.GetWithActiveCarsAsync();
         }
 
-        public Task TInsertAsync(CarModel entity)
+        public async Task TInsertAsync(CarModel entity)
         {
-            return _dal.InsertAsync(entity);
+            await ValidateAsync(entity);
+            await _dal.InsertAsync(entity);
         }
 
-        public Task TUpdateAsync(CarModel entity)
+        public async Task TUpdateAsync(CarModel entity)
         {
-            return _dal.UpdateAsync(entity);
+            await ValidateAsync(entity);
+            await _dal.UpdateAsync(entity);
+        }
+
+        private async Task ValidateAsync(CarModel entity)
+        {
+            entity.ModelName = entity.ModelName.Trim();
+            if (entity.BrandId <= 0)
+                throw new ValidationException("Marka seçimi zorunludur.");
+            if (string.IsNullOrWhiteSpace(entity.ModelName))
+                throw new ValidationException("Model adı zorunludur.");
+            if (await _dal.ModelNameExistsAsync(entity.BrandId, entity.ModelName,
+                    entity.CarModelId > 0 ? entity.CarModelId : null))
+                throw new ValidationException("Bu model ilgili marka altında zaten kayıtlı.");
         }
     }
 }

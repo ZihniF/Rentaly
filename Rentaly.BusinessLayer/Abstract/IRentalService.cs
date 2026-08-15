@@ -12,6 +12,8 @@ namespace Rentaly.BusinessLayer.Abstract
 
         Task<int> TCreateBookingAsync(CreateBookingDto dto);
 
+        Task TUpdateAsync(UpdateRentalDto dto);
+
         Task TUpdateStatusAsync(UpdateRentalStatusDto dto);
 
         Task TDeleteAsync(int id);

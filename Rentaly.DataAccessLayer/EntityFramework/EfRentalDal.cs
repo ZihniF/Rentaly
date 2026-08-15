@@ -114,5 +114,43 @@ namespace Rentaly.DataAccessLayer.EntityFramework
             await transaction.CommitAsync();
             return true;
         }
+
+        public async Task<bool> TryUpdateRentalAsync(Rental rental)
+        {
+            await using var transaction = await _rentalyContext.Database.BeginTransactionAsync(
+                IsolationLevel.Serializable);
+
+            var current = await _rentalyContext.Rentals
+                .FirstOrDefaultAsync(x => x.RentalId == rental.RentalId);
+            if (current is null)
+                throw new KeyNotFoundException("Rezervasyon bulunamadı.");
+            if (current.Status != RentalStatus.Pending)
+                throw new InvalidOperationException("Yalnızca bekleyen rezervasyonlar düzenlenebilir.");
+
+            var hasConflict = await _rentalyContext.Rentals.AnyAsync(x =>
+                x.RentalId != rental.RentalId &&
+                x.CarId == rental.CarId &&
+                (x.Status == RentalStatus.Pending || x.Status == RentalStatus.Approved) &&
+                rental.PickupDate < x.ReturnDate &&
+                rental.ReturnDate > x.PickupDate);
+
+            if (hasConflict)
+            {
+                await transaction.RollbackAsync();
+                return false;
+            }
+
+            current.CarId = rental.CarId;
+            current.CustomerId = rental.CustomerId;
+            current.PickupBranchId = rental.PickupBranchId;
+            current.ReturnBranchId = rental.ReturnBranchId;
+            current.PickupDate = rental.PickupDate;
+            current.ReturnDate = rental.ReturnDate;
+            current.TotalPrice = rental.TotalPrice;
+
+            await _rentalyContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+            return true;
+        }
     }
 }

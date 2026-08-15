@@ -17,10 +17,13 @@ builder.Services.AddScoped<ICategoryService, CategoryManager>();
 
 builder.Services.AddScoped<ICarService, CarManager>();
 builder.Services.AddScoped<ICarDal, EfCarDal>();
+builder.Services.AddScoped<IValidator<Rentaly.EntityLayer.Entities.Car>, CarValidator>();
 builder.Services.AddScoped<ICarModelService, CarModelManager>();
 builder.Services.AddScoped<ICarModelDal, EfCarModelDal>();
 builder.Services.AddScoped<IHomeContentService, HomeContentManager>();
 builder.Services.AddScoped<IHomeContentDal, EfHomeContentDal>();
+builder.Services.AddScoped<IHomeStatisticsService, HomeStatisticsManager>();
+builder.Services.AddScoped<IHomeStatisticsDal, EfHomeStatisticsDal>();
 
 builder.Services.AddScoped<IBranchService, BranchManager>();
 builder.Services.AddScoped<IBranchDal, EfBranchDal>();
@@ -34,6 +37,7 @@ builder.Services.AddScoped<ICustomerDal, EfCustomerDal>();
 builder.Services.AddScoped<IValidator<CreateRentalDto>, CreateRentalValidator>();
 builder.Services.AddScoped<IValidator<CreateBookingDto>, CreateBookingValidator>();
 builder.Services.AddScoped<IValidator<UpdateRentalStatusDto>, UpdateRentalStatusValidator>();
+builder.Services.AddScoped<IValidator<UpdateRentalDto>, UpdateRentalValidator>();
 builder.Services.AddScoped<IRentalDal, EfRentalDal>();
 builder.Services.AddScoped<IRentalService, RentalManager>();
 
@@ -58,7 +62,6 @@ if (app.Environment.IsDevelopment())
     {
         var context = scope.ServiceProvider.GetRequiredService<RentalyContext>();
         await context.Database.MigrateAsync();
-        await RentalyDataSeeder.SeedExpandedFleetAsync(context);
     }
     catch (Exception exception)
     {

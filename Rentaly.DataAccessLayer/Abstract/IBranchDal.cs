@@ -7,5 +7,7 @@ namespace Rentaly.DataAccessLayer.Abstract
 {
     public interface IBranchDal :IGerenicDal<Branch>
     {
+        Task<List<Branch>> GetActiveListAsync();
+        Task ArchiveAsync(int id);
     }
 }

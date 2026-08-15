@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using Rentaly.WebUI.Models;
 using System.Diagnostics;
 using Rentaly.BusinessLayer.Abstract;
 using Rentaly.DtoLayer.CarDtos;
+using Rentaly.DtoLayer.PageDtos;
 using Rentaly.EntityLayer.Enums;
+using Rentaly.WebUI.Mappings;
+using Rentaly.DtoLayer.HomeDtos;
+using System.Globalization;
 
 namespace Rentaly.WebUI.Controllers
 {
@@ -14,48 +17,68 @@ namespace Rentaly.WebUI.Controllers
         private readonly ICarModelService _models;
         private readonly IBranchService _branches;
         private readonly IHomeContentService _contents;
+        private readonly IHomeStatisticsService _statistics;
 
         public HomeController(ICarService cars, IBrandService brands, ICarModelService models,
-            IBranchService branches, IHomeContentService contents)
+            IBranchService branches, IHomeContentService contents, IHomeStatisticsService statistics)
         {
-            _cars = cars; _brands = brands; _models = models; _branches = branches; _contents = contents;
+            _cars = cars; _brands = brands; _models = models; _branches = branches;
+            _contents = contents; _statistics = statistics;
         }
 
         public async Task<IActionResult> Index(int? branchId, DateTime? pickupDate, DateTime? returnDate)
         {
+            var branches = (await _branches.TGetListAsync())
+                .OrderBy(x => x.City)
+                .ThenBy(x => x.BranchName)
+                .ToList();
+            var searchRequested = branchId.HasValue || pickupDate.HasValue || returnDate.HasValue;
             var hasBothDates = pickupDate.HasValue && returnDate.HasValue;
-            var hasOnlyOneDate = pickupDate.HasValue != returnDate.HasValue;
+            var branchExists = branchId.HasValue && branches.Any(x => x.BranchId == branchId.Value);
+            var pickupIsCurrent = pickupDate.HasValue && pickupDate.Value >= DateTime.Now.AddMinutes(-1);
             var hasValidRange = hasBothDates && returnDate > pickupDate;
+            var validAvailabilitySearch = searchRequested && branchExists && pickupIsCurrent && hasValidRange;
 
-            if (hasOnlyOneDate)
-                ModelState.AddModelError(string.Empty, "Müsaitlik araması için alış ve iade tarihlerini birlikte seçmelisiniz.");
+            if (searchRequested && (!branchId.HasValue || !hasBothDates))
+                ModelState.AddModelError(string.Empty, "Müsaitlik araması için lokasyon, alış ve iade alanlarının tamamını seçmelisiniz.");
+            else if (branchId.HasValue && !branchExists)
+                ModelState.AddModelError(string.Empty, "Seçtiğiniz lokasyon bulunamadı.");
+            else if (pickupDate.HasValue && !pickupIsCurrent)
+                ModelState.AddModelError(string.Empty, "Alış tarihi geçmiş bir tarih olamaz.");
             else if (hasBothDates && !hasValidRange)
                 ModelState.AddModelError(string.Empty, "İade tarihi teslim alma tarihinden sonra olmalıdır.");
 
             var contents = await _contents.TGetActiveAsync();
+            var liveStatistics = await _statistics.TGetAsync();
+            var statisticItems = contents
+                .Where(x => x.Section == HomeSectionType.Statistic)
+                .Select(x => x.ToPageDto())
+                .ToList();
+            foreach (var item in statisticItems)
+                item.Subtitle = GetStatisticValue(item.Icon, item.DisplayOrder, liveStatistics);
             var filter = new CarFilterDto
             {
-                BranchId = branchId,
-                PickupDate = hasValidRange ? pickupDate : null,
-                ReturnDate = hasValidRange ? returnDate : null
+                BranchId = validAvailabilitySearch ? branchId : null,
+                PickupDate = validAvailabilitySearch ? pickupDate : null,
+                ReturnDate = validAvailabilitySearch ? returnDate : null
             };
 
-            var model = new HomeViewModel
+            var model = new HomePageDto
             {
-                Processes = contents.Where(x => x.Section == HomeSectionType.Process).ToList(),
-                Futures = contents.Where(x => x.Section == HomeSectionType.Future).ToList(),
-                Statistics = contents.Where(x => x.Section == HomeSectionType.Statistic).ToList(),
-                Awards = contents.Where(x => x.Section == HomeSectionType.Award).ToList(),
-                Testimonials = contents.Where(x => x.Section == HomeSectionType.Testimonial).ToList(),
-                Faqs = contents.Where(x => x.Section == HomeSectionType.Faq).ToList(),
-                Cars = await _cars.TGetFilteredCarsAsync(filter, 10),
-                Brands = await _brands.TGetWithActiveCarsAsync(),
-                Models = await _models.TGetWithActiveCarsAsync(),
-                Branches = (await _branches.TGetListAsync()).OrderBy(x => x.City).ThenBy(x => x.BranchName).ToList(),
+                Processes = contents.Where(x => x.Section == HomeSectionType.Process).Select(x => x.ToPageDto()).ToList(),
+                Futures = contents.Where(x => x.Section == HomeSectionType.Future).Select(x => x.ToPageDto()).ToList(),
+                Statistics = statisticItems,
+                Awards = contents.Where(x => x.Section == HomeSectionType.Award).Select(x => x.ToPageDto()).ToList(),
+                Testimonials = contents.Where(x => x.Section == HomeSectionType.Testimonial).Select(x => x.ToPageDto()).ToList(),
+                Faqs = contents.Where(x => x.Section == HomeSectionType.Faq).Select(x => x.ToPageDto()).ToList(),
+                Cars = (await _cars.TGetFilteredCarsAsync(filter, 10)).Select(x => x.ToCardDto()).ToList(),
+                Brands = (await _brands.TGetWithActiveCarsAsync()).Select(x => x.ToOptionDto()).ToList(),
+                Models = (await _models.TGetWithActiveCarsAsync()).Select(x => x.ToOptionDto()).ToList(),
+                Branches = branches.Select(x => x.ToOptionDto()).ToList(),
                 SelectedBranchId = branchId,
                 PickupDate = pickupDate,
                 ReturnDate = returnDate,
-                AvailabilitySearchApplied = branchId.HasValue && hasValidRange
+                AvailabilitySearchApplied = validAvailabilitySearch
             };
 
             return View(model);
@@ -69,10 +92,35 @@ namespace Rentaly.WebUI.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorPageDto { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
         [Route("404")]
         public IActionResult NotFoundPage() { Response.StatusCode = 404; return View("NotFound"); }
+
+        private static string GetStatisticValue(string metricKey, int displayOrder, HomeStatisticsDto statistics)
+        {
+            var value = metricKey.Trim().ToLowerInvariant() switch
+            {
+                "completed-rentals" => statistics.CompletedRentalCount,
+                "customers" => statistics.CustomerCount,
+                "active-cars" => statistics.ActiveCarCount,
+                "available-cars" => statistics.AvailableCarCount,
+                "total-rentals" => statistics.TotalRentalCount,
+                "pending-rentals" => statistics.PendingRentalCount,
+                "testimonials" => statistics.TestimonialCount,
+                "branches" => statistics.BranchCount,
+                _ => displayOrder switch
+                {
+                    1 => statistics.CompletedRentalCount,
+                    2 => statistics.CustomerCount,
+                    3 => statistics.ActiveCarCount,
+                    4 => statistics.BranchCount,
+                    _ => 0
+                }
+            };
+
+            return value.ToString("N0", CultureInfo.GetCultureInfo("tr-TR"));
+        }
     }
 }

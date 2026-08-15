@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Rentaly.BusinessLayer.Abstract;
+using Rentaly.DtoLayer.PageDtos;
 using Rentaly.EntityLayer.Entities;
 using Rentaly.EntityLayer.Enums;
+using Rentaly.WebUI.Mappings;
 using Rentaly.WebUI.Models;
 
 namespace Rentaly.WebUI.Areas.Admin.Controllers;
@@ -18,9 +20,10 @@ public class HomeContentsController : Controller
         var allItems = (await _service.TGetListAsync())
             .OrderBy(x => x.Section)
             .ThenBy(x => x.DisplayOrder)
+            .Select(x => x.ToPageDto())
             .ToList();
 
-        return View(new HomeContentsIndexViewModel
+        return View(new HomeContentsIndexDto
         {
             AllItems = allItems,
             Items = section.HasValue

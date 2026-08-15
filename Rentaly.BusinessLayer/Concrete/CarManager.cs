@@ -5,16 +5,21 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Rentaly.DtoLayer.CarDtos;
+using FluentValidation;
 
 namespace Rentaly.BusinessLayer.Concrete
 {
     public class CarManager : ICarService
     {
         private readonly ICarDal _carDal;
+        private readonly ICarModelDal _modelDal;
+        private readonly IValidator<Car> _validator;
 
-        public CarManager(ICarDal carDal)
+        public CarManager(ICarDal carDal, ICarModelDal modelDal, IValidator<Car> validator)
         {
             _carDal = carDal;
+            _modelDal = modelDal;
+            _validator = validator;
         }
 
         public async Task TDeleteAsync(int id)
@@ -44,12 +49,22 @@ namespace Rentaly.BusinessLayer.Concrete
 
         public async Task TInsertAsync(Car entity)
         {
+            await ValidateAsync(entity);
             await _carDal.InsertAsync(entity);
         }
 
         public async Task TUpdateAsync(Car entity)
         {
+            await ValidateAsync(entity);
             await _carDal.UpdateAsync(entity);
+        }
+
+        private async Task ValidateAsync(Car entity)
+        {
+            await _validator.ValidateAndThrowAsync(entity);
+            var model = await _modelDal.GetByIdAsync(entity.ModelId);
+            if (model.BrandId != entity.BrandId)
+                throw new ValidationException("Seçilen model seçilen markaya ait değil.");
         }
     }
 }

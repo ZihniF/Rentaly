@@ -10,7 +10,7 @@ public class CategoryController : Controller
     private readonly ICategoryService _categoryService;
     public CategoryController(ICategoryService categoryService) => _categoryService = categoryService;
 
-    public async Task<IActionResult> CategoryList() => View(await _categoryService.TGetListAsync());
+    public async Task<IActionResult> CategoryList() => View("CategoryList", await _categoryService.TGetListAsync());
     [HttpGet("/Category/Index")] public Task<IActionResult> Index() => CategoryList();
 
     [HttpGet] public IActionResult CreateCategory() => View();
@@ -28,6 +28,7 @@ public class CategoryController : Controller
     {
         if (!ModelState.IsValid) return RedirectToAction(nameof(CategoryList));
         await _categoryService.TInsertAsync(category);
+        TempData["Success"] = "Kategori eklendi.";
         return RedirectToAction(nameof(CategoryList));
     }
 
@@ -44,6 +45,7 @@ public class CategoryController : Controller
     {
         if (!ModelState.IsValid) return RedirectToAction(nameof(CategoryList));
         await _categoryService.TUpdateAsync(category);
+        TempData["Success"] = "Kategori güncellendi.";
         return RedirectToAction(nameof(CategoryList));
     }
 }

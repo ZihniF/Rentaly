@@ -1,4 +1,4 @@
-@model Rentaly.WebUI.Models.BookingViewModel
+@model Rentaly.DtoLayer.PageDtos.BookingPageDto
 @{ ViewData["Title"] = "Rezervasyon"; }
 
 <section class="booking-hero">
@@ -19,7 +19,7 @@
                 <div>
                     <h2>Araç ve tarihler</h2>
                     <div class="form-grid">
-                        <label>Araç<select asp-for="CarId"><option value="">Araç seçin</option>@foreach (var x in Model.Cars.Where(x => x.IsActive)){<option value="@x.CarId">@x.Brand?.BrandName @x.Model?.ModelName — @x.DailyPrice.ToString("N0") ₺/gün</option>}</select></label>
+                        <label>Araç<select asp-for="CarId"><option value="">Araç seçin</option>@foreach (var x in Model.Cars){<option value="@x.CarId">@x.BrandName @x.ModelName — @x.DailyPrice.ToString("N0") ₺/gün</option>}</select></label>
                         <label>Alış şubesi<select asp-for="PickupBranchId"><option value="">Şube seçin</option>@foreach (var x in Model.Branches){<option value="@x.BranchId">@x.City — @x.BranchName</option>}</select></label>
                         <label>İade şubesi<select asp-for="ReturnBranchId"><option value="">Şube seçin</option>@foreach (var x in Model.Branches){<option value="@x.BranchId">@x.City — @x.BranchName</option>}</select></label>
                         <label>Alış<input asp-for="PickupDate" type="datetime-local" /></label>

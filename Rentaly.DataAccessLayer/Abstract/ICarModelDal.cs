@@ -9,5 +9,6 @@ namespace Rentaly.DataAccessLayer.Abstract
     {
         Task<List<CarModel>> GetAllWithBrandAsync();
         Task<List<CarModel>> GetWithActiveCarsAsync();
+        Task<bool> ModelNameExistsAsync(int brandId, string modelName, int? excludedModelId = null);
     }
 }
