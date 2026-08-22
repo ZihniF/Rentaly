@@ -74,61 +74,61 @@ Ekran görüntülerini `docs/screenshots` klasörüne aşağıdaki dosya adları
 
 <!-- ![Rentaly ana sayfa](docs/screenshots/home-page.png) -->
 
-> Görsel bekleniyor: `docs/screenshots/home-page.png`
+> Görsel bekleniyor
 
 ### Araç Filosu
 
 <!-- ![Araç filosu ve filtreler](docs/screenshots/fleet.png) -->
 
-> Görsel bekleniyor: `docs/screenshots/fleet.png`
+> Görsel bekleniyor
 
 ### Araç Detayı
 
 <!-- ![Araç detay sayfası](docs/screenshots/car-detail.png) -->
 
-> Görsel bekleniyor: `docs/screenshots/car-detail.png`
+> Görsel bekleniyor
 
 ### Rezervasyon Formu
 
 <!-- ![Rezervasyon formu](docs/screenshots/booking.png) -->
 
-> Görsel bekleniyor: `docs/screenshots/booking.png`
+> Görsel bekleniyor
 
 ### Admin Dashboard
 
 <!-- ![Admin dashboard](docs/screenshots/admin-dashboard.png) -->
 
-> Görsel bekleniyor: `docs/screenshots/admin-dashboard.png`
+> Görsel bekleniyor
 
 ### Rezervasyon Yönetimi
 
 <!-- ![Admin rezervasyon yönetimi](docs/screenshots/admin-rentals.png) -->
 
-> Görsel bekleniyor: `docs/screenshots/admin-rentals.png`
+> Görsel bekleniyor: 
 
 ### Araç Yönetimi
 
 <!-- ![Admin araç yönetimi](docs/screenshots/admin-cars.png) -->
 
-> Görsel bekleniyor: `docs/screenshots/admin-cars.png`
+> Görsel bekleniyor: 
 
 ### Marka ve Model Yönetimi
 
 <!-- ![Marka ve model yönetimi](docs/screenshots/admin-brands-models.png) -->
 
-> Görsel bekleniyor: `docs/screenshots/admin-brands-models.png`
+> Görsel bekleniyor:
 
 ### Ana Sayfa İçerik Yönetimi
 
 <!-- ![Ana sayfa içerik yönetimi](docs/screenshots/admin-home-contents.png) -->
 
-> Görsel bekleniyor: `docs/screenshots/admin-home-contents.png`
+> Görsel bekleniyor: 
 
 ### Onay E-postası
 
 <!-- ![Rezervasyon onay e-postası](docs/screenshots/approval-email.png) -->
 
-> Görsel bekleniyor: `docs/screenshots/approval-email.png`
+> Görsel bekleniyor: 
 
 ## Rezervasyon Akışı
 
