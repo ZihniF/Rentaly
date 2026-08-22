@@ -7,5 +7,8 @@ namespace Rentaly.DataAccessLayer.Abstract
 {
     public interface ICustomerDal : IGerenicDal<Customer>
     {
+        Task<List<Customer>> GetActiveListAsync();
+        Task<Customer> GetActiveByIdAsync(int id);
+        Task ArchiveAsync(int id);
     }
 }

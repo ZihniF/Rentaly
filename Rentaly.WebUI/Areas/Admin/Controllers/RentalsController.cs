@@ -142,10 +142,13 @@ public class RentalsController : Controller
                     ? "Rezervasyon onaylandı ve e-posta gönderildi."
                     : "Rezervasyon onaylandı; SMTP yapılandırılmadığı için e-posta gönderilemedi.";
             }
-            else
+            else TempData["Success"] = status switch
             {
-                TempData["Success"] = "Rezervasyon reddedildi; tarih aralığı yeniden müsait.";
-            }
+                RentalStatus.Rejected => "Rezervasyon reddedildi; tarih aralığı yeniden müsait.",
+                RentalStatus.Cancelled => "Rezervasyon iptal edildi; tarih aralığı yeniden müsait.",
+                RentalStatus.Completed => "Rezervasyon tamamlandı olarak işaretlendi.",
+                _ => "Rezervasyon durumu güncellendi."
+            };
         }
         catch (Exception exception)
         {

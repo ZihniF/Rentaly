@@ -10,6 +10,7 @@ namespace Rentaly.EntityLayer.Entities
         public int CategoryId { get; set; }
         [Required(ErrorMessage = "Kategori adı zorunludur.")]
         public string CategoryName { get; set; } = string.Empty; // SUV, Sedan, Hatchback vs
+        public bool IsActive { get; set; } = true;
         public List<Car> Cars { get; set; } = new();
 
     }

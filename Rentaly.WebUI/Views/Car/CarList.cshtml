@@ -800,7 +800,8 @@
                     <i class="fa-solid fa-pen-to-square"></i> Düzenle
                 </a>
                 <button class="tbl-btn tbl-btn-delete"
-                        onclick="openDeleteModal(@car.CarId, '@car.PlateNumber')">
+                        data-car-plate="@car.PlateNumber"
+                        onclick="openCarDeleteModal(@car.CarId, this.dataset.carPlate)">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
@@ -881,7 +882,8 @@
                     <i class="fa-solid fa-pen-to-square"></i>
                 </a>
                 <button class="tbl-btn tbl-btn-delete" style="flex:none;padding:7px 10px;"
-                        onclick="openDeleteModal(@car.CarId, '@car.PlateNumber')">
+                        data-car-plate="@car.PlateNumber"
+                        onclick="openCarDeleteModal(@car.CarId, this.dataset.carPlate)">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
@@ -1128,7 +1130,7 @@
     }
 
     // ── Sil Modal ──
-    function openDeleteModal(id, plate) {
+    function openCarDeleteModal(id, plate) {
         document.getElementById('deleteCarPlate').textContent = `"${plate}"`;
         document.getElementById('deleteCarId').value = id;
         document.getElementById('deleteForm').action = `/Car/Delete/${id}`;

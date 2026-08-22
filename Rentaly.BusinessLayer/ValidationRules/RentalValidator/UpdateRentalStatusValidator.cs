@@ -17,9 +17,11 @@ namespace Rentaly.BusinessLayer.ValidationRules
             RuleFor(x => x.Status)
                 .Must(status =>
                     status == RentalStatus.Approved ||
-                    status == RentalStatus.Rejected)
+                    status == RentalStatus.Rejected ||
+                    status == RentalStatus.Cancelled ||
+                    status == RentalStatus.Completed)
                 .WithMessage(
-                    "Rezervasyon yalnızca onaylanabilir veya reddedilebilir.");
+                    "Geçerli bir rezervasyon durumu seçilmelidir.");
         }
     }
 }

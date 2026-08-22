@@ -553,7 +553,8 @@
                                 <span>Düzenle</span>
                             </button>
                             <button class="tbl-btn tbl-btn-delete"
-                                    onclick="openDeleteModal(@cat.CategoryId, '@cat.CategoryName')">
+                                    data-category-name="@cat.CategoryName"
+                                    onclick="openCategoryDeleteModal(@cat.CategoryId, this.dataset.categoryName)">
                                 <i class="fa-solid fa-trash-can"></i>
                                 <span>Sil</span>
                             </button>
@@ -882,7 +883,7 @@
     }
 
     // ── Modal: Sil ──
-    function openDeleteModal(id, name) {
+    function openCategoryDeleteModal(id, name) {
         document.getElementById('deleteCatName').textContent = `"${name}"`;
         document.getElementById('deleteCatId').value = id;
         document.getElementById('deleteForm').action = `/Category/Delete/${id}`;

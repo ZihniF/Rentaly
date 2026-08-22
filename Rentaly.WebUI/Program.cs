@@ -24,6 +24,8 @@ builder.Services.AddScoped<IHomeContentService, HomeContentManager>();
 builder.Services.AddScoped<IHomeContentDal, EfHomeContentDal>();
 builder.Services.AddScoped<IHomeStatisticsService, HomeStatisticsManager>();
 builder.Services.AddScoped<IHomeStatisticsDal, EfHomeStatisticsDal>();
+builder.Services.AddScoped<IHomePageSettingsService, HomePageSettingsManager>();
+builder.Services.AddScoped<IHomePageSettingsDal, EfHomePageSettingsDal>();
 
 builder.Services.AddScoped<IBranchService, BranchManager>();
 builder.Services.AddScoped<IBranchDal, EfBranchDal>();

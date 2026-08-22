@@ -1,7 +1,10 @@
 namespace Rentaly.DtoLayer.PageDtos;
 
+using Rentaly.DtoLayer.HomeDtos;
+
 public class HomePageDto
 {
+    public HomePageSettingsDto Settings { get; set; } = new();
     public List<HomeContentItemDto> Processes { get; set; } = [];
     public List<HomeContentItemDto> Futures { get; set; } = [];
     public List<HomeContentItemDto> Statistics { get; set; } = [];

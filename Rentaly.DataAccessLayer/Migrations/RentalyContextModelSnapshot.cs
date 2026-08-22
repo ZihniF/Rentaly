@@ -188,6 +188,9 @@ namespace Rentaly.DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
@@ -215,6 +218,9 @@ namespace Rentaly.DataAccessLayer.Migrations
                     b.Property<string>("IdentityNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -251,6 +257,41 @@ namespace Rentaly.DataAccessLayer.Migrations
                     b.Property<string>("Title").IsRequired().HasMaxLength(180).HasColumnType("nvarchar(180)");
                     b.HasKey("HomeContentId");
                     b.ToTable("HomeContents");
+                });
+
+            modelBuilder.Entity("Rentaly.EntityLayer.Entities.HomePageSettings", b =>
+                {
+                    b.Property<int>("HomePageSettingsId").ValueGeneratedNever().HasColumnType("int");
+                    b.Property<string>("AwardsEyebrow").IsRequired().HasMaxLength(120).HasColumnType("nvarchar(120)");
+                    b.Property<string>("AwardsTitle").IsRequired().HasMaxLength(180).HasColumnType("nvarchar(180)");
+                    b.Property<string>("BrandsEyebrow").IsRequired().HasMaxLength(120).HasColumnType("nvarchar(120)");
+                    b.Property<string>("BrandsTitle").IsRequired().HasMaxLength(180).HasColumnType("nvarchar(180)");
+                    b.Property<string>("CarsEyebrow").IsRequired().HasMaxLength(120).HasColumnType("nvarchar(120)");
+                    b.Property<string>("CarsTitle").IsRequired().HasMaxLength(180).HasColumnType("nvarchar(180)");
+                    b.Property<string>("ContactEmail").IsRequired().HasMaxLength(160).HasColumnType("nvarchar(160)");
+                    b.Property<string>("ContactPhone").IsRequired().HasMaxLength(80).HasColumnType("nvarchar(80)");
+                    b.Property<string>("FaqDescription").IsRequired().HasMaxLength(400).HasColumnType("nvarchar(400)");
+                    b.Property<string>("FaqEyebrow").IsRequired().HasMaxLength(120).HasColumnType("nvarchar(120)");
+                    b.Property<string>("FaqTitle").IsRequired().HasMaxLength(180).HasColumnType("nvarchar(180)");
+                    b.Property<string>("FooterDescription").IsRequired().HasMaxLength(500).HasColumnType("nvarchar(500)");
+                    b.Property<string>("FutureBackgroundUrl").IsRequired().HasMaxLength(500).HasColumnType("nvarchar(500)");
+                    b.Property<string>("FutureEyebrow").IsRequired().HasMaxLength(120).HasColumnType("nvarchar(120)");
+                    b.Property<string>("HeroAccentText").IsRequired().HasMaxLength(120).HasColumnType("nvarchar(120)");
+                    b.Property<string>("HeroBackgroundUrl").IsRequired().HasMaxLength(500).HasColumnType("nvarchar(500)");
+                    b.Property<string>("HeroDescription").IsRequired().HasMaxLength(500).HasColumnType("nvarchar(500)");
+                    b.Property<string>("HeroEyebrow").IsRequired().HasMaxLength(160).HasColumnType("nvarchar(160)");
+                    b.Property<string>("HeroSecondLine").IsRequired().HasMaxLength(200).HasColumnType("nvarchar(200)");
+                    b.Property<string>("HeroTitle").IsRequired().HasMaxLength(200).HasColumnType("nvarchar(200)");
+                    b.Property<string>("ProcessEyebrow").IsRequired().HasMaxLength(120).HasColumnType("nvarchar(120)");
+                    b.Property<string>("ProcessTitle").IsRequired().HasMaxLength(180).HasColumnType("nvarchar(180)");
+                    b.Property<string>("RoadsideAssistance").IsRequired().HasMaxLength(160).HasColumnType("nvarchar(160)");
+                    b.Property<string>("StatisticsEyebrow").IsRequired().HasMaxLength(120).HasColumnType("nvarchar(120)");
+                    b.Property<string>("StatisticsTitle").IsRequired().HasMaxLength(180).HasColumnType("nvarchar(180)");
+                    b.Property<string>("TestimonialsEyebrow").IsRequired().HasMaxLength(120).HasColumnType("nvarchar(120)");
+                    b.Property<string>("TestimonialsTitle").IsRequired().HasMaxLength(180).HasColumnType("nvarchar(180)");
+                    b.Property<string>("WorkingHours").IsRequired().HasMaxLength(160).HasColumnType("nvarchar(160)");
+                    b.HasKey("HomePageSettingsId");
+                    b.ToTable("HomePageSettings");
                 });
 
             modelBuilder.Entity("Rentaly.EntityLayer.Entities.Rental", b =>

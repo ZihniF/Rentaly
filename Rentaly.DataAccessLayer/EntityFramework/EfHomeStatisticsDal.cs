@@ -31,7 +31,7 @@ public class EfHomeStatisticsDal : IHomeStatisticsDal
             CompletedRentalCount = rentalCounts?.Completed ?? 0,
             TotalRentalCount = rentalCounts?.Total ?? 0,
             PendingRentalCount = rentalCounts?.Pending ?? 0,
-            CustomerCount = await _context.Customers.AsNoTracking().CountAsync(),
+            CustomerCount = await _context.Customers.AsNoTracking().CountAsync(x => x.IsActive),
             ActiveCarCount = await _context.Cars.AsNoTracking().CountAsync(x => x.IsActive),
             AvailableCarCount = await _context.Cars.AsNoTracking()
                 .CountAsync(x => x.IsActive && x.IsAvailable),

@@ -3,7 +3,9 @@
 @{
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var currentSection = Context.Request.Query["section"].ToString();
-    var isHomeContentPage = string.Equals(currentController, "HomeContents", StringComparison.OrdinalIgnoreCase);
+    var isHomeContentsPage = string.Equals(currentController, "HomeContents", StringComparison.OrdinalIgnoreCase);
+    var isHomePageSettingsPage = string.Equals(currentController, "HomePageSettings", StringComparison.OrdinalIgnoreCase);
+    var isHomeContentPage = isHomeContentsPage || isHomePageSettingsPage;
 }
 <head>
     <meta charset="UTF-8" />
@@ -81,7 +83,8 @@
                     <i class="fa-solid fa-chevron-right submenu-arrow ms-auto"></i>
                 </div>
                 <div class="submenu @(isHomeContentPage ? "open" : "")" id="homeContentSubmenu">
-                    <a asp-area="Admin" asp-controller="HomeContents" asp-action="Index" class="nav-link @(isHomeContentPage && string.IsNullOrEmpty(currentSection) ? "active" : "")"><span class="link-text">Genel Bakış</span></a>
+                    <a asp-area="Admin" asp-controller="HomePageSettings" asp-action="Index" class="nav-link @(isHomePageSettingsPage ? "active" : "")"><span class="link-text">Genel Başlıklar &amp; Footer</span></a>
+                    <a asp-area="Admin" asp-controller="HomeContents" asp-action="Index" class="nav-link @(isHomeContentsPage && string.IsNullOrEmpty(currentSection) ? "active" : "")"><span class="link-text">Genel Bakış</span></a>
                     <a asp-area="Admin" asp-controller="HomeContents" asp-action="Index" asp-route-section="Process" class="nav-link @(currentSection == "Process" ? "active" : "")"><span class="link-text">Process / İşleyiş</span></a>
                     <a asp-area="Admin" asp-controller="HomeContents" asp-action="Index" asp-route-section="Future" class="nav-link @(currentSection == "Future" ? "active" : "")"><span class="link-text">Our Future</span></a>
                     <a asp-area="Admin" asp-controller="HomeContents" asp-action="Index" asp-route-section="Statistic" class="nav-link @(currentSection == "Statistic" ? "active" : "")"><span class="link-text">İstatistikler / About</span></a>

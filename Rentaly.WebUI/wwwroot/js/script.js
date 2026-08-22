@@ -311,7 +311,7 @@ function renderVehicles(list) {
           <button class="btn-action btn-edit" onclick="editVehicle(${v.id})" title="Düzenle">
             <i class="fa-solid fa-pen-to-square"></i> Düzenle
           </button>
-          <button class="btn-action btn-delete" onclick="openDeleteModal(${v.id})" title="Sil">
+          <button class="btn-action btn-delete" onclick="openVehicleDemoDeleteModal(${v.id})" title="Sil">
             <i class="fa-solid fa-trash-can"></i> Sil
           </button>
         </div>
@@ -366,7 +366,7 @@ function editVehicle(id) {
   showToast(`${v.brand} ${v.model} düzenleme formu açıldı`, 'warning');
 }
 
-function openDeleteModal(id) {
+function openVehicleDemoDeleteModal(id) {
   deleteTargetId = id;
   const v = vehicles.find(x => x.id === id);
   const nameEl = document.getElementById('deleteCarName');

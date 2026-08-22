@@ -32,7 +32,7 @@
                         <td>@rental.CustomerFullName<br><small>@rental.CustomerEmail</small></td>
                         <td>@rental.PickupDate.ToString("dd.MM.yyyy HH:mm")<br><small>@rental.ReturnDate.ToString("dd.MM.yyyy HH:mm")</small></td>
                         <td>@rental.TotalPrice.ToString("N2") ₺</td>
-                        <td><span class="badge @(rental.Status == RentalStatus.Pending ? "bg-warning" : rental.Status == RentalStatus.Approved ? "bg-success" : "bg-secondary")">@rental.Status</span></td>
+                        <td><span class="badge @(rental.Status == RentalStatus.Pending ? "bg-warning" : rental.Status == RentalStatus.Approved ? "bg-success" : rental.Status == RentalStatus.Completed ? "bg-primary" : rental.Status == RentalStatus.Cancelled ? "bg-dark" : "bg-secondary")">@rental.Status</span></td>
                         <td>
                             <div class="d-flex gap-2 flex-wrap">
                                 @if (rental.Status == RentalStatus.Pending)
@@ -50,6 +50,12 @@
                                         <input type="hidden" name="status" value="@RentalStatus.Rejected">
                                         <button type="submit" class="btn btn-sm btn-outline-danger">Reddet</button>
                                     </form>
+                                    <form asp-action="UpdateStatus" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@rental.RentalId">
+                                        <input type="hidden" name="status" value="@RentalStatus.Cancelled">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">İptal Et</button>
+                                    </form>
                                 }
                                 @if (rental.Status == RentalStatus.Approved)
                                 {
@@ -57,6 +63,18 @@
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@rental.RentalId">
                                         <button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-envelope"></i> Maili yeniden gönder</button>
+                                    </form>
+                                    <form asp-action="UpdateStatus" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@rental.RentalId">
+                                        <input type="hidden" name="status" value="@RentalStatus.Completed">
+                                        <button type="submit" class="btn btn-sm btn-primary"><i class="fa-solid fa-flag-checkered"></i> Tamamlandı</button>
+                                    </form>
+                                    <form asp-action="UpdateStatus" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@rental.RentalId">
+                                        <input type="hidden" name="status" value="@RentalStatus.Cancelled">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">İptal Et</button>
                                     </form>
                                 }
                                 <form asp-action="Delete" asp-route-id="@rental.RentalId" method="post">

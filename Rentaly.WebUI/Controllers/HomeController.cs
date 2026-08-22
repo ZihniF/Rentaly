@@ -18,12 +18,15 @@ namespace Rentaly.WebUI.Controllers
         private readonly IBranchService _branches;
         private readonly IHomeContentService _contents;
         private readonly IHomeStatisticsService _statistics;
+        private readonly IHomePageSettingsService _pageSettings;
 
         public HomeController(ICarService cars, IBrandService brands, ICarModelService models,
-            IBranchService branches, IHomeContentService contents, IHomeStatisticsService statistics)
+            IBranchService branches, IHomeContentService contents, IHomeStatisticsService statistics,
+            IHomePageSettingsService pageSettings)
         {
             _cars = cars; _brands = brands; _models = models; _branches = branches;
             _contents = contents; _statistics = statistics;
+            _pageSettings = pageSettings;
         }
 
         public async Task<IActionResult> Index(int? branchId, DateTime? pickupDate, DateTime? returnDate)
@@ -65,6 +68,7 @@ namespace Rentaly.WebUI.Controllers
 
             var model = new HomePageDto
             {
+                Settings = await _pageSettings.TGetAsync(),
                 Processes = contents.Where(x => x.Section == HomeSectionType.Process).Select(x => x.ToPageDto()).ToList(),
                 Futures = contents.Where(x => x.Section == HomeSectionType.Future).Select(x => x.ToPageDto()).ToList(),
                 Statistics = statisticItems,

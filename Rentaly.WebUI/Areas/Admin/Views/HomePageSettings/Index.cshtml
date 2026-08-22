@@ -1,0 +1,49 @@
+@model Rentaly.DtoLayer.HomeDtos.HomePageSettingsDto
+@{
+    ViewData["Title"] = "Ana Sayfa Genel Ayarları";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="page-header">
+    <h1 class="page-title">Ana Sayfa Genel Ayarları</h1>
+    <p class="page-subtitle">Hero, bölüm başlıkları ve footer iletişim bilgilerini yönetin.</p>
+</div>
+
+@if (TempData["Success"] is not null) { <div class="alert alert-success">@TempData["Success"]</div> }
+
+<form method="post" class="form-card" novalidate>
+    @Html.AntiForgeryToken()
+    <input asp-for="HomePageSettingsId" type="hidden" />
+    <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+    <h5 class="mb-3">Hero Alanı</h5>
+    <div class="row g-3">
+        <div class="col-md-6"><label asp-for="HeroEyebrow" class="form-label">Üst başlık</label><input asp-for="HeroEyebrow" class="form-control" /></div>
+        <div class="col-md-4"><label asp-for="HeroTitle" class="form-label">Ana başlık</label><input asp-for="HeroTitle" class="form-control" /></div>
+        <div class="col-md-4"><label asp-for="HeroAccentText" class="form-label">Vurgulu metin</label><input asp-for="HeroAccentText" class="form-control" /></div>
+        <div class="col-md-4"><label asp-for="HeroSecondLine" class="form-label">İkinci satır</label><input asp-for="HeroSecondLine" class="form-control" /></div>
+        <div class="col-12"><label asp-for="HeroDescription" class="form-label">Açıklama</label><textarea asp-for="HeroDescription" class="form-control" rows="2"></textarea></div>
+        <div class="col-12"><label asp-for="HeroBackgroundUrl" class="form-label">Hero arka plan görseli</label><input asp-for="HeroBackgroundUrl" class="form-control" /></div>
+    </div>
+
+    <hr class="my-4" /><h5 class="mb-3">Bölüm Başlıkları</h5>
+    <div class="row g-3">
+        <div class="col-md-6"><label asp-for="ProcessEyebrow" class="form-label">İşleyiş üst başlık</label><input asp-for="ProcessEyebrow" class="form-control" /></div><div class="col-md-6"><label asp-for="ProcessTitle" class="form-label">İşleyiş başlık</label><input asp-for="ProcessTitle" class="form-control" /></div>
+        <div class="col-md-6"><label asp-for="CarsEyebrow" class="form-label">Araçlar üst başlık</label><input asp-for="CarsEyebrow" class="form-control" /></div><div class="col-md-6"><label asp-for="CarsTitle" class="form-label">Araçlar başlık</label><input asp-for="CarsTitle" class="form-control" /></div>
+        <div class="col-md-6"><label asp-for="FutureEyebrow" class="form-label">Gelecek üst başlık</label><input asp-for="FutureEyebrow" class="form-control" /></div><div class="col-md-6"><label asp-for="FutureBackgroundUrl" class="form-label">Gelecek arka plan görseli</label><input asp-for="FutureBackgroundUrl" class="form-control" /></div>
+        <div class="col-md-6"><label asp-for="StatisticsEyebrow" class="form-label">İstatistik üst başlık</label><input asp-for="StatisticsEyebrow" class="form-control" /></div><div class="col-md-6"><label asp-for="StatisticsTitle" class="form-label">İstatistik başlık</label><input asp-for="StatisticsTitle" class="form-control" /></div>
+        <div class="col-md-6"><label asp-for="BrandsEyebrow" class="form-label">Markalar üst başlık</label><input asp-for="BrandsEyebrow" class="form-control" /></div><div class="col-md-6"><label asp-for="BrandsTitle" class="form-label">Markalar başlık</label><input asp-for="BrandsTitle" class="form-control" /></div>
+        <div class="col-md-6"><label asp-for="AwardsEyebrow" class="form-label">Ödüller üst başlık</label><input asp-for="AwardsEyebrow" class="form-control" /></div><div class="col-md-6"><label asp-for="AwardsTitle" class="form-label">Ödüller başlık</label><input asp-for="AwardsTitle" class="form-control" /></div>
+        <div class="col-md-6"><label asp-for="TestimonialsEyebrow" class="form-label">Yorumlar üst başlık</label><input asp-for="TestimonialsEyebrow" class="form-control" /></div><div class="col-md-6"><label asp-for="TestimonialsTitle" class="form-label">Yorumlar başlık</label><input asp-for="TestimonialsTitle" class="form-control" /></div>
+        <div class="col-md-4"><label asp-for="FaqEyebrow" class="form-label">FAQ üst başlık</label><input asp-for="FaqEyebrow" class="form-control" /></div><div class="col-md-4"><label asp-for="FaqTitle" class="form-label">FAQ başlık</label><input asp-for="FaqTitle" class="form-control" /></div><div class="col-md-4"><label asp-for="FaqDescription" class="form-label">FAQ açıklama</label><input asp-for="FaqDescription" class="form-control" /></div>
+    </div>
+
+    <hr class="my-4" /><h5 class="mb-3">Footer</h5>
+    <div class="row g-3">
+        <div class="col-12"><label asp-for="FooterDescription" class="form-label">Footer açıklaması</label><input asp-for="FooterDescription" class="form-control" /></div>
+        <div class="col-md-6"><label asp-for="ContactPhone" class="form-label">Telefon</label><input asp-for="ContactPhone" class="form-control" /></div><div class="col-md-6"><label asp-for="ContactEmail" class="form-label">E-posta</label><input asp-for="ContactEmail" class="form-control" /></div>
+        <div class="col-md-6"><label asp-for="WorkingHours" class="form-label">Çalışma saatleri</label><input asp-for="WorkingHours" class="form-control" /></div><div class="col-md-6"><label asp-for="RoadsideAssistance" class="form-label">Yol yardımı</label><input asp-for="RoadsideAssistance" class="form-control" /></div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-4"><i class="fa-solid fa-floppy-disk me-2"></i>Ayarları Kaydet</button>
+</form>

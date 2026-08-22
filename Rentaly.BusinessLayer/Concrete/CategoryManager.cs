@@ -18,7 +18,7 @@ namespace Rentaly.BusinessLayer.Concrete
 
         public async Task TDeleteAsync(int id)
         {
-            await _categoryDal.DeleteAsync(id);
+            await _categoryDal.ArchiveAsync(id);
         }
 
         public async Task<Category> TGetByIdAsync(int id)
@@ -28,7 +28,7 @@ namespace Rentaly.BusinessLayer.Concrete
 
         public async Task<List<Category>> TGetListAsync()
         {
-            return await _categoryDal.GetListAsync();
+            return await _categoryDal.GetActiveListAsync();
         }
 
         public async Task TInsertAsync(Category entity)

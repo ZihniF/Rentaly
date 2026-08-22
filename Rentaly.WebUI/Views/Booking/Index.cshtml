@@ -53,7 +53,7 @@
 </section>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" defer></script>
+    <script src="~/lib/tesseract/tesseract.min.js" asp-append-version="true" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const input = document.getElementById('identityPhoto');
@@ -70,10 +70,24 @@
                 progress.value = 0;
                 status.textContent = 'Kimlik bilgileri okunuyor…';
                 try {
-                    if (!window.Tesseract) throw new Error('OCR bileşeni yüklenemedi. İnternet bağlantınızı kontrol edin.');
-                    const result = await Tesseract.recognize(file, 'tur+eng', { logger: message => {
-                        if (message.status === 'recognizing text') { progress.value = Math.round((message.progress || 0) * 100); status.textContent = `Kimlik bilgileri okunuyor… %${progress.value}`; }
-                    }});
+                    if (!window.Tesseract) throw new Error('OCR bileşeni yüklenemedi. Lütfen sayfayı yenileyin.');
+                    const worker = await Tesseract.createWorker(['tur', 'eng'], 1, {
+                        workerPath: '/lib/tesseract/worker.min.js',
+                        corePath: '/lib/tesseract/core',
+                        langPath: '/lib/tesseract/lang-data',
+                        logger: message => {
+                            if (message.status === 'recognizing text') {
+                                progress.value = Math.round((message.progress || 0) * 100);
+                                status.textContent = `Kimlik bilgileri okunuyor… %${progress.value}`;
+                            }
+                        }
+                    });
+                    let result;
+                    try {
+                        result = await worker.recognize(file);
+                    } finally {
+                        await worker.terminate();
+                    }
                     const fields = parseTurkishIdentity(result.data.text || '');
                     if (fields.name) document.getElementById('Name').value = fields.name;
                     if (fields.surname) document.getElementById('Surname').value = fields.surname;

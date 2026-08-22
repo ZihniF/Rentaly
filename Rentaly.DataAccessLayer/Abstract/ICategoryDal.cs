@@ -7,5 +7,7 @@ namespace Rentaly.DataAccessLayer.Abstract
 {
     public interface ICategoryDal:IGerenicDal<Category>
     {
+        Task<List<Category>> GetActiveListAsync();
+        Task ArchiveAsync(int id);
     }
 }

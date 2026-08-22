@@ -135,5 +135,6 @@ namespace Rentaly.DataAccessLayer.Concrete
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Rental> Rentals { get; set; }
         public DbSet<HomeContent> HomeContents { get; set; }
+        public DbSet<HomePageSettings> HomePageSettings { get; set; }
     }
 }

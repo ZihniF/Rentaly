@@ -23,10 +23,7 @@
     </div>
 </header>
 <main>@RenderBody()</main>
-<footer class="public-footer">
-    <div class="container footer-grid"><div><img src="~/rentaly/images/logo-light.png" alt="Rentaly" /><p>Kaliteli araçlar, kolay rezervasyon ve güvenli yolculuk.</p></div><div><strong>İletişim</strong><p>+90 850 000 00 00<br />hello@rentaly.com</p></div><div><strong>Çalışma saatleri</strong><p>Hafta içi 08.00–18.00<br />7/24 yol yardım</p></div></div>
-    <div class="container copyright">© @DateTime.Now.Year Rentaly — Tüm hakları saklıdır.</div>
-</footer>
+@await Component.InvokeAsync("PublicFooter")
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 @await RenderSectionAsync("Scripts", required: false)

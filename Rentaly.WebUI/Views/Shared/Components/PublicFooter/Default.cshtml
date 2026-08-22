@@ -1,0 +1,10 @@
+@model Rentaly.DtoLayer.HomeDtos.HomePageSettingsDto
+
+<footer class="public-footer">
+    <div class="container footer-grid">
+        <div><img src="~/rentaly/images/logo-light.png" alt="Rentaly" /><p>@Model.FooterDescription</p></div>
+        <div><strong>İletişim</strong><p>@Model.ContactPhone<br /><a href="mailto:@Model.ContactEmail">@Model.ContactEmail</a></p></div>
+        <div><strong>Çalışma saatleri</strong><p>@Model.WorkingHours<br />@Model.RoadsideAssistance</p></div>
+    </div>
+    <div class="container copyright">© @DateTime.Now.Year Rentaly — Tüm hakları saklıdır.</div>
+</footer>

@@ -21,24 +21,25 @@ namespace Rentaly.BusinessLayer.Concrete
 
         public async Task TDeleteAsync(int id)
         {
-            await _customerDal.DeleteAsync(id);
+            await _customerDal.ArchiveAsync(id);
         }
 
         public async Task<GetCustomerByIdDto> TGetByIdAsync(int id)
         {
-            var value= await _customerDal.GetByIdAsync(id);
+            var value = await _customerDal.GetActiveByIdAsync(id);
             return _mapper.Map<GetCustomerByIdDto>(value);
         }
 
         public async Task<List<ResultCustomerDto>> TGetListAsync()
         {
-            var values = await _customerDal.GetListAsync();
+            var values = await _customerDal.GetActiveListAsync();
             return _mapper.Map<List<ResultCustomerDto>>(values);
         }
 
         public async Task<int> TInsertAsync(CreateCustomerDto dto)
         {
             var value = _mapper.Map<Customer>(dto);
+            value.IsActive = true;
             await _customerDal.InsertAsync(value);
             return value.CustomerId;
         }

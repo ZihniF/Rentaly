@@ -5,6 +5,7 @@ using Rentaly.DataAccessLayer.Abstract;
 using Rentaly.DtoLayer.RentalDtos;
 using Rentaly.EntityLayer.Entities;
 using Rentaly.EntityLayer.Enums;
+using Rentaly.BusinessLayer.Rules;
 
 namespace Rentaly.BusinessLayer.Concrete
 {
@@ -215,12 +216,8 @@ namespace Rentaly.BusinessLayer.Concrete
                     "Rezervasyon bulunamadı.");
             }
 
-            if (rental.Status != RentalStatus.Pending)
-            {
-                throw new InvalidOperationException(
-                    "Yalnızca bekleyen rezervasyonlar " +
-                    "onaylanabilir veya reddedilebilir.");
-            }
+            if (!RentalStatusTransitionRules.CanTransition(rental.Status, dto.Status))
+                throw new InvalidOperationException($"{rental.Status} durumundaki rezervasyon {dto.Status} durumuna geçirilemez.");
 
             rental.Status = dto.Status;
 

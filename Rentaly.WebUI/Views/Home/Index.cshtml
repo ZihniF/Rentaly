@@ -3,11 +3,11 @@
     ViewData["Title"] = "Araç Kiralama";
 }
 
-<section class="hero" style="background-image:linear-gradient(90deg,rgba(7,12,17,.82),rgba(7,12,17,.18)),url('/rentaly/images/background/1.jpg')">
+<section class="hero" style="background-image:linear-gradient(90deg,rgba(7,12,17,.82),rgba(7,12,17,.18)),url('@Model.Settings.HeroBackgroundUrl')">
     <div class="container hero-copy">
-        <span class="eyebrow">Yolculuğun özgür hali</span>
-        <h1>Aradığınız <em>araç</em><br />tam burada.</h1>
-        <p>Lokasyonunuzu ve tarihlerinizi seçin, yalnızca gerçekten müsait araçları görün.</p>
+        <span class="eyebrow">@Model.Settings.HeroEyebrow</span>
+        <h1>@Model.Settings.HeroTitle <em>@Model.Settings.HeroAccentText</em><br />@Model.Settings.HeroSecondLine</h1>
+        <p>@Model.Settings.HeroDescription</p>
     </div>
 </section>
 
@@ -39,7 +39,7 @@
 @if (!Model.AvailabilitySearchApplied)
 {
 <section class="section container" id="process">
-    <div class="section-head"><span>Process / İşleyiş</span><h2>Üç adımda yola çıkın</h2></div>
+    <div class="section-head"><span>@Model.Settings.ProcessEyebrow</span><h2>@Model.Settings.ProcessTitle</h2></div>
     @if (Model.Processes.Count > 0)
     {
         <div class="process-grid">
@@ -64,8 +64,8 @@
     <div class="container">
         <div class="section-head split">
             <div>
-                <span>@(Model.AvailabilitySearchApplied ? "Seçtiğiniz tarihlerde müsait" : "Filomuz")</span>
-                <h2>@(Model.AvailabilitySearchApplied ? "Müsait araçlar" : "Araçlar")</h2>
+                <span>@(Model.AvailabilitySearchApplied ? "Seçtiğiniz tarihlerde müsait" : Model.Settings.CarsEyebrow)</span>
+                <h2>@(Model.AvailabilitySearchApplied ? "Müsait araçlar" : Model.Settings.CarsTitle)</h2>
             </div>
             <a asp-controller="Fleet" asp-action="Index">Tüm araçları gör →</a>
         </div>
@@ -99,14 +99,14 @@
 
 @if (!Model.AvailabilitySearchApplied)
 {
-<section class="future" id="future" style="background-image:linear-gradient(rgba(8,14,18,.88),rgba(8,14,18,.88)),url('/rentaly/images/background/3.jpg')">
+<section class="future" id="future" style="background-image:linear-gradient(rgba(8,14,18,.88),rgba(8,14,18,.88)),url('@Model.Settings.FutureBackgroundUrl')">
     <div class="container">
         @if (Model.Futures.Count > 0)
         {
             @foreach (var item in Model.Futures)
             {
                 <div class="future-copy">
-                    <span>Our Future / Geleceğimiz</span>
+                    <span>@Model.Settings.FutureEyebrow</span>
                     <h2>@item.Title</h2>
                     <p>@item.Description</p>
                 </div>
@@ -114,10 +114,10 @@
         }
         else
         {
-            <div class="future-copy"><span>Our Future</span><h2>Gelecek vizyonumuz hazırlanıyor.</h2></div>
+            <div class="future-copy"><span>@Model.Settings.FutureEyebrow</span><h2>Gelecek vizyonumuz hazırlanıyor.</h2></div>
         }
 
-        <div class="section-head stats-heading" id="about"><span>About / İstatistikler</span><h2>Rakamlarla Rentaly</h2></div>
+        <div class="section-head stats-heading" id="about"><span>@Model.Settings.StatisticsEyebrow</span><h2>@Model.Settings.StatisticsTitle</h2></div>
         <div class="stats">
             @foreach (var item in Model.Statistics)
             {
@@ -131,7 +131,7 @@
 @if (!Model.AvailabilitySearchApplied)
 {
 <section class="section container" id="brands-models">
-    <div class="section-head"><span>Markalar &amp; Modeller</span><h2>Filomuzu keşfedin</h2></div>
+    <div class="section-head"><span>@Model.Settings.BrandsEyebrow</span><h2>@Model.Settings.BrandsTitle</h2></div>
     @if (Model.Brands.Count > 0)
     {
         <div class="brand-strip">
@@ -167,7 +167,7 @@
 {
 <section class="section soft" id="awards">
     <div class="container">
-        <div class="section-head"><span>Başarılarımız</span><h2>Ödüller</h2></div>
+        <div class="section-head"><span>@Model.Settings.AwardsEyebrow</span><h2>@Model.Settings.AwardsTitle</h2></div>
         @if (Model.Awards.Count > 0)
         {
             <div class="award-grid">
@@ -188,7 +188,7 @@
 @if (!Model.AvailabilitySearchApplied)
 {
 <section class="section container" id="testimonials">
-    <div class="section-head"><span>Testimonial</span><h2>Misafirlerimizin deneyimleri</h2></div>
+    <div class="section-head"><span>@Model.Settings.TestimonialsEyebrow</span><h2>@Model.Settings.TestimonialsTitle</h2></div>
     @if (Model.Testimonials.Count > 0)
     {
         <div class="testimonial-grid">
@@ -218,7 +218,7 @@
 {
 <section class="section faq-section" id="faq">
     <div class="container faq-layout">
-        <div class="section-head"><span>Yardım</span><h2>Sık Sorulan Sorular</h2><p>Rezervasyon öncesi merak ettikleriniz.</p></div>
+        <div class="section-head"><span>@Model.Settings.FaqEyebrow</span><h2>@Model.Settings.FaqTitle</h2><p>@Model.Settings.FaqDescription</p></div>
         @if (Model.Faqs.Count > 0)
         {
             <div class="accordion" id="faqAccordion">

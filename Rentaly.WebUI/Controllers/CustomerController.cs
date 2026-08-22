@@ -49,11 +49,22 @@ public class CustomerController : Controller
         return RedirectToAction(nameof(CustomerList));
     }
 
-    [HttpPost, ValidateAntiForgeryToken]
+    [HttpPost("/Customer/Delete/{id:int}"), ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
-        try { await _customerService.TDeleteAsync(id); TempData["Success"] = "Müşteri silindi."; }
-        catch (Exception ex) { TempData["Error"] = ex.Message; }
+        try
+        {
+            await _customerService.TDeleteAsync(id);
+            TempData["Success"] = "Müşteri silindi. Rezervasyon geçmişi korunarak kayıt arşivlendi.";
+        }
+        catch (KeyNotFoundException)
+        {
+            TempData["Error"] = "Silinecek müşteri bulunamadı.";
+        }
+        catch
+        {
+            TempData["Error"] = "Müşteri silinemedi. Lütfen tekrar deneyin.";
+        }
         return RedirectToAction(nameof(CustomerList));
     }
 }

@@ -742,7 +742,8 @@
                     <i class="fa-solid fa-pen-to-square"></i> Düzenle
                 </a>
                 <button class="tbl-btn tbl-btn-delete"
-                        onclick="openDeleteModal(@customer.CustomerId, '@fullName')">
+                        data-customer-name="@fullName"
+                        onclick="openCustomerDeleteModal(@customer.CustomerId, this.dataset.customerName)">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
@@ -802,7 +803,8 @@
                     <i class="fa-solid fa-pen-to-square"></i>
                 </a>
                 <button class="tbl-btn tbl-btn-delete" style="flex:none;padding:7px 10px;"
-                        onclick="openDeleteModal(@customer.CustomerId, '@fullName')">
+                        data-customer-name="@fullName"
+                        onclick="openCustomerDeleteModal(@customer.CustomerId, this.dataset.customerName)">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
@@ -851,7 +853,7 @@
                             <strong id="deleteCustomerName">bu müşteriyi</strong> silmek istediğinizden emin misiniz?
                         </p>
                         <p style="margin:6px 0 0;font-size:13px;color:var(--text-muted);">
-                            Bu işlem geri alınamaz. İlgili kira kayıtları etkilenebilir.
+                            Müşteri arşivlenecek, mevcut rezervasyon geçmişi korunacaktır.
                         </p>
                     </div>
                 </div>
@@ -1030,7 +1032,7 @@
     }
 
     // ── Sil Modal ──
-    function openDeleteModal(id, name) {
+    function openCustomerDeleteModal(id, name) {
         document.getElementById('deleteCustomerName').textContent = `"${name}"`;
         document.getElementById('deleteCustomerId').value = id;
         document.getElementById('deleteForm').action = `/Customer/Delete/${id}`;
