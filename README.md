@@ -76,7 +76,7 @@ Projenin kullanıcı arayüzü, rezervasyon akışı ve yönetim panelinden alı
 
 ### Araç Filosu
 
-![Araç filosu ve filtreler](docs/screenshots/fleet.png)
+![Araç filosu ve düzeltilmiş fiyat filtreleri](docs/screenshots/fleet-price-filter-fixed.png)
 
 ### Araç Detayı
 
