@@ -43,9 +43,9 @@
                     }
                 </select>
             </label>
-            <div class="two">
-                <label>Min. fiyat<input asp-for="Filter.MinPrice" type="number" min="0" step="1" /></label>
-                <label>Maks. fiyat<input asp-for="Filter.MaxPrice" type="number" min="0" step="1" /></label>
+            <div class="two" style="grid-template-columns:repeat(2,minmax(0,1fr));width:100%;min-width:0;max-width:100%;">
+                <label style="width:100%;min-width:0;max-width:100%;">Min. fiyat<input asp-for="Filter.MinPrice" type="number" min="0" step="1" style="display:block;width:100% !important;min-width:0 !important;max-width:100% !important;box-sizing:border-box;" /></label>
+                <label style="width:100%;min-width:0;max-width:100%;">Maks. fiyat<input asp-for="Filter.MaxPrice" type="number" min="0" step="1" style="display:block;width:100% !important;min-width:0 !important;max-width:100% !important;box-sizing:border-box;" /></label>
             </div>
             <label>Alış<input asp-for="Filter.PickupDate" id="fleetPickup" type="datetime-local" min="@minimumDate" /></label>
             <label>İade<input asp-for="Filter.ReturnDate" id="fleetReturn" type="datetime-local" min="@minimumDate" /></label>
