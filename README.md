@@ -68,67 +68,47 @@ Bu özellik kimlik doğrulaması yapmaz. Görsel sunucuya gönderilmeden kullan�
 
 ## Ekran Görüntüleri
 
-Ekran görüntülerini `docs/screenshots` klasörüne aşağıdaki dosya adlarıyla ekleyebilirsin. Görselleri ekledikten sonra ilgili Markdown satırlarının başındaki ve sonundaki yorum işaretlerini kaldırman yeterlidir.
+Projenin kullanıcı arayüzü, rezervasyon akışı ve yönetim panelinden alınan güncel ekran görüntüleri aşağıdadır.
 
 ### Ana Sayfa
 
-<!-- ![Rentaly ana sayfa](docs/screenshots/home-page.png) -->
-
-> Görsel bekleniyor
+![Rentaly ana sayfa](docs/screenshots/home-page.png)
 
 ### Araç Filosu
 
-<!-- ![Araç filosu ve filtreler](docs/screenshots/fleet.png) -->
-
-> Görsel bekleniyor
+![Araç filosu ve filtreler](docs/screenshots/fleet.png)
 
 ### Araç Detayı
 
-<!-- ![Araç detay sayfası](docs/screenshots/car-detail.png) -->
-
-> Görsel bekleniyor
+![Araç detay sayfası](docs/screenshots/car-detail.png)
 
 ### Rezervasyon Formu
 
-<!-- ![Rezervasyon formu](docs/screenshots/booking.png) -->
-
-> Görsel bekleniyor
+![Rezervasyon formu](docs/screenshots/booking.png)
 
 ### Admin Dashboard
 
-<!-- ![Admin dashboard](docs/screenshots/admin-dashboard.png) -->
-
-> Görsel bekleniyor
+![Admin dashboard](docs/screenshots/admin-dashboard.png)
 
 ### Rezervasyon Yönetimi
 
-<!-- ![Admin rezervasyon yönetimi](docs/screenshots/admin-rentals.png) -->
-
-> Görsel bekleniyor: 
+![Admin rezervasyon yönetimi](docs/screenshots/admin-rentals.png)
 
 ### Araç Yönetimi
 
-<!-- ![Admin araç yönetimi](docs/screenshots/admin-cars.png) -->
-
-> Görsel bekleniyor: 
+![Admin araç yönetimi](docs/screenshots/admin-cars.png)
 
 ### Marka ve Model Yönetimi
 
-<!-- ![Marka ve model yönetimi](docs/screenshots/admin-brands-models.png) -->
-
-> Görsel bekleniyor:
+![Marka ve model yönetimi](docs/screenshots/admin-brands-models.png)
 
 ### Ana Sayfa İçerik Yönetimi
 
-<!-- ![Ana sayfa içerik yönetimi](docs/screenshots/admin-home-contents.png) -->
-
-> Görsel bekleniyor: 
+![Ana sayfa içerik yönetimi](docs/screenshots/admin-home-contents.png)
 
 ### Onay E-postası
 
-<!-- ![Rezervasyon onay e-postası](docs/screenshots/approval-email.png) -->
-
-> Görsel bekleniyor: 
+![Rezervasyon onay e-postası](docs/screenshots/approval-email.png)
 
 ## Rezervasyon Akışı
 
@@ -249,7 +229,7 @@ dotnet run --project Rentaly.WebUI
 Varsayılan adresler:
 
 - Kullanıcı arayüzü: `http://localhost:5158`
-- Admin dashboard: `http://localhost:5158/AdminLayout/Index`
+- Admin dashboard: `http://localhost:5158/admin`
 - Rezervasyon yönetimi: `http://localhost:5158/Admin/Rentals`
 
 ## E-posta Yapılandırması
@@ -309,4 +289,3 @@ dotnet test Rentaly.Tests/Rentaly.Tests.csproj --no-build
 - Kategori arşivleme işlemi geçmiş araç ve rezervasyon ilişkilerinin korunmasını sağlar.
 - Kimlik OCR özelliği isteğe bağlıdır ve kimlik doğrulama amacı taşımaz.
 - `MSB3021` veya `MSB3027` dosya kilidi hatası alınırsa çalışan `Rentaly.WebUI` uygulamasını ya da Visual Studio debug oturumunu durdurup yeniden derleme yap.
-
